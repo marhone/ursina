@@ -8,7 +8,6 @@ def duplicate(entity):
     if hasattr(entity, 'model') and entity.model:
         e.model = copy(entity.model)
 
-
     for name in entity.attributes:
         if name == 'model':
             continue
@@ -33,7 +32,6 @@ def duplicate(entity):
 
         e.clip = entity.clip
 
-
     return e
 
 
@@ -49,7 +47,7 @@ if __name__ == '__main__':
     cone.model.colorize()
     prismatoid = Entity(model=Prismatoid(), x=4)
     cylinder = Entity(model=Cylinder(), x=5)
-    mesh = Entity(model=Mesh(vertices=((0,0,0), (0,1,0), (-1,1,0))), x=6)
+    mesh = Entity(model=Mesh(vertices=((0, 0, 0), (0, 1, 0), (-1, 1, 0))), x=6)
 
     names = ('quad', 'circle', 'rounded_quad', 'sphere', 'cone', 'prismatoid', 'cylinder', 'mesh')
     for i, e in enumerate((quad, sprite, circle, cone, prismatoid, cylinder, mesh)):
@@ -60,7 +58,6 @@ if __name__ == '__main__':
         e2.y += 1.5
         # e2.model.mode='line'
         # e2.model.generate()
-
 
     EditorCamera()
     app.run()

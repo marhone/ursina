@@ -7,7 +7,7 @@ from screeninfo import get_monitors
 from ursina.entity import Entity
 from ursina import color
 from ursina import application
-from ursina import scene    # for toggling collider visibility
+from ursina import scene  # for toggling collider visibility
 
 
 class Window(WindowProperties):
@@ -18,7 +18,7 @@ class Window(WindowProperties):
         loadPrcFileData('', 'notify-level-util error')
         loadPrcFileData('', 'textures-auto-power-2 #t')
         self.setForeground(True)
-        self.vsync = True   # can't be set during play
+        self.vsync = True  # can't be set during play
         self.show_ursina_splash = False
 
         self.title = application.asset_folder.name
@@ -28,15 +28,14 @@ class Window(WindowProperties):
             print('using default sceen resolution.', 'OS:', os.name)
             self.screen_resolution = Vec2(1366, 768)
 
-        self.fullscreen_size = Vec2(self.screen_resolution[0]+1, ((self.screen_resolution[0]) * .5625)+1)
+        self.fullscreen_size = Vec2(self.screen_resolution[0] + 1, ((self.screen_resolution[0]) * .5625) + 1)
         self.windowed_size = Vec2(self.fullscreen_size[0] / 1.25, self.fullscreen_size[0] / 1.25 * .5625)
-        self.windowed_position = None   # gets set when entering fullscreen so position will be correct when going back to windowed mode
+        self.windowed_position = None  # gets set when entering fullscreen so position will be correct when going back to windowed mode
         self.size = self.windowed_size
         self.borderless = True
 
-
     def late_init(self):
-        self.position = Vec2(0,0)
+        self.position = Vec2(0, 0)
         self.top = Vec2(0, .5)
         self.bottom = Vec2(0, .5)
         self.center = Vec2(0, 0)
@@ -51,56 +50,60 @@ class Window(WindowProperties):
             'wireframe',
             'colliders',
             'normals',
-            )
+        )
         self.display_mode = 'default'
-
 
     @property
     def left(self):
-        return Vec2(-self.aspect_ratio/2, 0)
+        return Vec2(-self.aspect_ratio / 2, 0)
+
     @property
     def right(self):
-        return Vec2(self.aspect_ratio/2, 0)
+        return Vec2(self.aspect_ratio / 2, 0)
+
     @property
     def top_left(self):
-        return Vec2(-self.aspect_ratio/2, .5)
+        return Vec2(-self.aspect_ratio / 2, .5)
+
     @property
     def top_right(self):
-        return Vec2(self.aspect_ratio/2, .5)
+        return Vec2(self.aspect_ratio / 2, .5)
+
     @property
     def bottom_left(self):
-        return Vec2(-self.aspect_ratio/2, -.5)
+        return Vec2(-self.aspect_ratio / 2, -.5)
+
     @property
     def bottom_right(self):
-        return Vec2(self.aspect_ratio/2, -.5)
-
+        return Vec2(self.aspect_ratio / 2, -.5)
 
     def center_on_screen(self):
         self.position = Vec2(
             int((self.screen_resolution[0] - self.size[0]) / 2),
             int((self.screen_resolution[1] - self.size[1]) / 2)
-            )
+        )
 
-    def make_exit_button(self):     # called by main after setting up camera
+    def make_exit_button(self):  # called by main after setting up camera
         from ursina.prefabs.exit_button import ExitButton
         self.exit_button = ExitButton()
 
         from ursina import Text
         import time
         self.fps_counter = Text(
-            name = 'fps_counter',
-            parent = scene.ui,
-            eternal = True,
-            position = (.5*self.aspect_ratio, .47, -999),
-            origin = (.8,.5),
-            text = '60',
-            add_to_scene_entities = True,
+            name='fps_counter',
+            parent=scene.ui,
+            eternal=True,
+            position=(.5 * self.aspect_ratio, .47, -999),
+            origin=(.8, .5),
+            text='60',
+            add_to_scene_entities=True,
             # background = True,
-            i = 0,
-            )
+            i=0,
+        )
+
         def update():
             if self.fps_counter.i > 60:
-                self.fps_counter.text = str(int(1//time.dt))
+                self.fps_counter.text = str(int(1 // time.dt))
                 self.fps_counter.i = 0
 
             self.fps_counter.i += 1
@@ -108,14 +111,14 @@ class Window(WindowProperties):
         self.fps_counter.update = update
 
         self.overlay = Entity(
-            name = 'overlay',
-            parent = scene.ui,
-            model = 'quad',
-            scale_x = self.aspect_ratio,
-            color = color.clear,
-            eternal = True,
-            z = -99
-            )
+            name='overlay',
+            parent=scene.ui,
+            model='quad',
+            scale_x=self.aspect_ratio,
+            color=color.clear,
+            eternal=True,
+            z=-99
+        )
 
     @property
     def size(self):
@@ -162,9 +165,6 @@ class Window(WindowProperties):
             for e in [e for e in scene.entities if e.model and e.alpha]:
                 e.shader = normals_shader
                 e.set_shader_input('object_matrix', e.getNetTransform().getMat())
-
-
-
 
     def __setattr__(self, name, value):
         try:
@@ -216,6 +216,7 @@ sys.modules[__name__] = Window()
 
 if __name__ == '__main__':
     from ursina import *
+
     app = Ursina()
 
     window.title = 'Title'

@@ -1,5 +1,7 @@
 from ursina import *
 import os, shutil
+
+
 # import imageio    # gets imported in convert_to_gif
 
 
@@ -20,7 +22,6 @@ class VideoRecorder(Entity):
         if key == 'f10':
             self.recording = not self.recording
 
-
     @property
     def recording(self):
         return self._recording
@@ -30,7 +31,7 @@ class VideoRecorder(Entity):
 
         if value == True:
             if self.file_path.exists():
-                shutil.rmtree(self.file_path)   # delete temp folder
+                shutil.rmtree(self.file_path)  # delete temp folder
             self.file_path.mkdir()
             print('start recording,', self.duration, self.file_path)
             window.fps_counter.enabled = False
@@ -42,7 +43,7 @@ class VideoRecorder(Entity):
         self._recording = value
 
     def update(self):
-        if self.i > 60/self.frame_skip * self.duration:
+        if self.i > 60 / self.frame_skip * self.duration:
             if self.recording:
                 self.convert_to_gif()
                 self.recording = False
@@ -51,9 +52,9 @@ class VideoRecorder(Entity):
             if self.i % self.frame_skip == 0:
                 print(self.i / self.frame_skip)
                 base.screenshot(
-                 	namePrefix = '\\video_temp\\' + self.video_name + '_' + str(self.i).zfill(4) + '.png',
-                 	defaultFilename = 0,
-                    )
+                    namePrefix='\\video_temp\\' + self.video_name + '_' + str(self.i).zfill(4) + '.png',
+                    defaultFilename=0,
+                )
             self.i += 1
 
     # store screenshot in memory
@@ -78,12 +79,11 @@ class VideoRecorder(Entity):
 
         for filename in os.listdir(self.file_path):
             # print(filename)
-            images.append(imageio.imread(self.file_path/filename))
+            images.append(imageio.imread(self.file_path / filename))
 
         imageio.mimsave(Path(f'{self.file_path.parent}/{self.video_name}.gif'), images)
-        shutil.rmtree(self.file_path)   # delete temp folder
+        shutil.rmtree(self.file_path)  # delete temp folder
         print('saved gif to:', Path(f'{self.file_path.parent}/{self.video_name}.gif'))
-
 
 
 class VideoRecorderUI(WindowPanel):
@@ -108,12 +108,11 @@ class VideoRecorderUI(WindowPanel):
                 self.name_field,
                 Space(1),
                 self.start_button,
-                ),
-            )
+            ),
+        )
         self.y = .5
         self.scale *= .75
         self.visible = False
-
 
     def input(self, key):
         if key == 'f12':
@@ -122,11 +121,10 @@ class VideoRecorderUI(WindowPanel):
         if held_keys['shift'] and key == 'f12':
             self.start_button.on_click()
 
-
     def start_recording(self):
         print(self.name_field)
         if self.name_field.text == '':
-            self.name_field.blink(color.color(0,1,1,.5), .5)
+            self.name_field.blink(color.color(0, 1, 1, .5), .5)
             print('enter name')
             return
 
@@ -136,8 +134,6 @@ class VideoRecorderUI(WindowPanel):
         application.video_recorder.video_name = self.name_field.text
         application.video_recorder.frame_skip = 60 // int(self.fps_field.text)
         application.video_recorder.recording = True
-
-
 
 
 if __name__ == '__main__':

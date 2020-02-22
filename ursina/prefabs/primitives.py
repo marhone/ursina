@@ -15,10 +15,9 @@ for colorname in color.color_names:
             ''')
         exec(procedural_code)
 
-
 if __name__ == '__main__':
     app = Ursina()
     RedCube()
     VioletSphere(x=1)
-    YellowCube(x=2, scale=(10,1,10), texture='white_cube', texture_scale=(10,10))
+    YellowCube(x=2, scale=(10, 1, 10), texture='white_cube', texture_scale=(10, 10))
     app.run()

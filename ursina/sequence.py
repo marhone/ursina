@@ -19,7 +19,6 @@ class Func():
 
 
 class Sequence():
-
     default_time_step = None
 
     def __init__(self, *args, **kwargs):
@@ -39,8 +38,6 @@ class Sequence():
         self.generate()
         application.sequences.append(self)
 
-
-
     def generate(self):
         self.funcs = list()
 
@@ -54,7 +51,6 @@ class Sequence():
                 arg.delay = self.duration
                 self.funcs.append(arg)
 
-
     def append(self, arg):
         self.args.append(arg)
 
@@ -66,7 +62,6 @@ class Sequence():
         elif isinstance(arg, Func):
             arg.delay = self.duration
             self.funcs.append(arg)
-
 
     def start(self):
         for f in self.funcs:
@@ -105,7 +100,6 @@ class Sequence():
                 f.func(*f.args, **f.kwargs)
                 f.finished = True
 
-
         if self.t >= self.duration:
             if self.loop:
                 for f in self.funcs:
@@ -117,7 +111,6 @@ class Sequence():
             if self.auto_destroy and self in application.sequences:
                 application.sequences.remove(self)
                 del self
-
 
 
 if __name__ == '__main__':
@@ -132,14 +125,15 @@ if __name__ == '__main__':
         Func(print, 'two'),
         Func(e.fade_in, duration=1),
         loop=True
-        )
+    )
 
     s.append(
         Func(print, 'appended to sequence')
-        )
+    )
+
 
     def input(key):
-        actions = {'s' : s.start, 'f' : s.finish, 'p' : s.pause, 'r' : s.resume}
+        actions = {'s': s.start, 'f': s.finish, 'p': s.pause, 'r': s.resume}
         if key in actions:
             actions[key]()
 

@@ -10,10 +10,10 @@ class Space():
 class WindowPanel(Draggable):
     def __init__(self, title='', content=[], **kwargs):
         super().__init__(
-            origin = (-0, .5),
-            scale = (.5, Text.size),
-            color = color.black,
-            )
+            origin=(-0, .5),
+            scale=(.5, Text.size),
+            color=color.black,
+        )
 
         # print(content)
         self.content = content
@@ -21,7 +21,7 @@ class WindowPanel(Draggable):
         self.popup = False
 
         for key, value in kwargs.items():
-            setattr(self, key ,value)
+            setattr(self, key, value)
 
         if self.text_entity:
             self.text_entity.world_scale_y = 1
@@ -43,7 +43,6 @@ class WindowPanel(Draggable):
                     c.y = -height
                     c.z = 0
 
-
                     if isinstance(c, Text):
                         c.origin = (-.5, .5)
                         c.x = -.48
@@ -54,22 +53,22 @@ class WindowPanel(Draggable):
                         c.scale = (.98, 2)
                         if hasattr(c, 'height'):
                             c.scale_y = height
-                        c.model = Quad(aspect=c.world_scale_x/c.world_scale_y)
+                        c.model = Quad(aspect=c.world_scale_x / c.world_scale_y)
                         height += c.scale_y
-                        c.y -= c.scale_y/2
+                        c.y -= c.scale_y / 2
 
                     elif hasattr(c, 'scale_y'):
                         height += c.scale_y
 
                     if hasattr(c, 'text_entity') and c.text_entity is not None:
-                        c.text_entity.world_scale = (1,1,1)
+                        c.text_entity.world_scale = (1, 1, 1)
 
                     height += spacing
 
-            self.panel = Panel(parent=self, scale_y=height, model=Quad(), origin=(0, .5), z=.1, color=self.color.tint(.1))
-            self.panel.model = Quad(aspect=self.panel.world_scale_x/self.panel.world_scale_y, radius=.025)
+            self.panel = Panel(parent=self, scale_y=height, model=Quad(), origin=(0, .5), z=.1,
+                               color=self.color.tint(.1))
+            self.panel.model = Quad(aspect=self.panel.world_scale_x / self.panel.world_scale_y, radius=.025)
             self.panel.origin = (0, .5)
-
 
         if self.popup:
             self.lock_x = True
@@ -81,7 +80,7 @@ class WindowPanel(Draggable):
                 color=color.black66,
                 highlight_color=color.black66,
                 pressed_color=color.black66,
-                )
+            )
 
             def close():
                 self.bg.enabled = False
@@ -105,8 +104,8 @@ if __name__ == '__main__':
             Text('leflaijfae\njofeoijfw'),
             InputField()
             # ButtonGroup(('test', 'eslk', 'skffk'))
-            )
         )
+    )
     # Text(dedent('''
     # [        My Window            [x]]
     # | Create your character

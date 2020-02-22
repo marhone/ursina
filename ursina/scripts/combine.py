@@ -1,8 +1,6 @@
 from ursina import *
 
 
-
-
 def combine(entity, analyze=False, auto_destroy=True):
     verts = list()
     tris = list()
@@ -11,7 +9,6 @@ def combine(entity, analyze=False, auto_destroy=True):
     cols = list()
     to_destroy = list()
     o = 0
-
 
     for e in scene.entities:
         if e.has_ancestor(entity) or e == entity:
@@ -33,11 +30,11 @@ def combine(entity, analyze=False, auto_destroy=True):
                         new_tris.append(t)
                     elif len(t) == 3:
                         new_tris.extend(t)
-                    elif len(t) == 4: # turn quad into tris
+                    elif len(t) == 4:  # turn quad into tris
                         new_tris.extend([t[0], t[1], t[2], t[2], t[3], t[0]])
 
-            new_tris = [t+o for t in new_tris]
-            new_tris = [(new_tris[i], new_tris[i+1], new_tris[i+2]) for i in range(0, len(new_tris), 3)]
+            new_tris = [t + o for t in new_tris]
+            new_tris = [(new_tris[i], new_tris[i + 1], new_tris[i + 2]) for i in range(0, len(new_tris), 3)]
 
             o += len(e.model.vertices)
             tris += new_tris
@@ -48,11 +45,10 @@ def combine(entity, analyze=False, auto_destroy=True):
             if e.model.uvs:
                 uvs += e.model.uvs
 
-            if e.model.colors: # if has vertex colors
+            if e.model.colors:  # if has vertex colors
                 cols.extend(e.model.colors)
             else:
-                cols.extend((e.color, ) * len(e.model.vertices))
-
+                cols.extend((e.color,) * len(e.model.vertices))
 
             if auto_destroy and e != entity:
                 to_destroy.append(e)
@@ -68,7 +64,6 @@ def combine(entity, analyze=False, auto_destroy=True):
     # if analyze:
     #     render.analyze()
     return entity.model
-
 
 
 def get_vertices(entity, relative_to=None):
@@ -90,6 +85,7 @@ def get_vertices(entity, relative_to=None):
 
 if __name__ == '__main__':
     from ursina import *
+
     app = Ursina()
 
     p = Entity()
@@ -100,7 +96,6 @@ if __name__ == '__main__':
     # p.y=2
     # p.model.save()
     # ursina_mesh_to_obj(p.model, name='combined_model_test', out_path=application.asset_folder)
-
 
     EditorCamera()
     app.run()

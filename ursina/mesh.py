@@ -30,30 +30,28 @@ class MeshModes(Enum):
         return self.value == other
 
 
-
-
 class Mesh(NodePath):
-
     _formats = {
-        (0,0,0) : GeomVertexFormat.getV3(),
-        (1,0,0) : GeomVertexFormat.getV3c4(),
-        (0,1,0) : GeomVertexFormat.getV3t2(),
-        (0,0,1) : GeomVertexFormat.getV3n3(),
-        (1,0,1) : GeomVertexFormat.getV3n3c4(),
-        (1,1,0) : GeomVertexFormat.getV3c4t2(),
-        (0,1,1) : GeomVertexFormat.getV3n3t2(),
-        (1,1,1) : GeomVertexFormat.getV3n3c4t2(),
-        }
+        (0, 0, 0): GeomVertexFormat.getV3(),
+        (1, 0, 0): GeomVertexFormat.getV3c4(),
+        (0, 1, 0): GeomVertexFormat.getV3t2(),
+        (0, 0, 1): GeomVertexFormat.getV3n3(),
+        (1, 0, 1): GeomVertexFormat.getV3n3c4(),
+        (1, 1, 0): GeomVertexFormat.getV3c4t2(),
+        (0, 1, 1): GeomVertexFormat.getV3n3t2(),
+        (1, 1, 1): GeomVertexFormat.getV3n3c4t2(),
+    }
 
     _modes = {
-        'triangle' : GeomTriangles,
-        'tristrip' : GeomTristrips,
-        'ngon' : GeomTrifans,
-        'line' : GeomLinestrips,
-        'point' : GeomPoints,
-        }
+        'triangle': GeomTriangles,
+        'tristrip': GeomTristrips,
+        'ngon': GeomTrifans,
+        'line': GeomLinestrips,
+        'point': GeomPoints,
+    }
 
-    def __init__(self, vertices=None, triangles=None, colors=None, uvs=None, normals=None, static=True, mode='triangle', thickness=1):
+    def __init__(self, vertices=None, triangles=None, colors=None, uvs=None, normals=None, static=True, mode='triangle',
+                 thickness=1):
         super().__init__('mesh')
 
         self.vertices = vertices
@@ -65,7 +63,8 @@ class Mesh(NodePath):
         self.mode = mode
         self.thickness = thickness
 
-        for var in (('vertices', vertices), ('triangles', triangles), ('colors', colors), ('uvs', uvs), ('normals', normals)):
+        for var in (
+        ('vertices', vertices), ('triangles', triangles), ('colors', colors), ('uvs', uvs), ('normals', normals)):
             name, value = var
             if value is None:
                 setattr(self, name, list())
@@ -74,7 +73,6 @@ class Mesh(NodePath):
             self.vertices = [tuple(v) for v in self.vertices]
             self.generate()
 
-
     def generate(self):  # call this after setting some of the variables to update it
         if hasattr(self, 'geomNode'):
             self.geomNode.removeAllGeoms()
@@ -82,13 +80,13 @@ class Mesh(NodePath):
         static_mode = Geom.UHStatic if self.static else Geom.UHDynamic
         vertex_format = Mesh._formats[(bool(self.colors), bool(self.uvs), bool(self.normals))]
         vdata = GeomVertexData('name', vertex_format, static_mode)
-        vdata.setNumRows(len(self.vertices)) # for speed
+        vdata.setNumRows(len(self.vertices))  # for speed
         self.geomNode = GeomNode('mesh')
         self.attachNewNode(self.geomNode)
 
         vertexwriter = GeomVertexWriter(vdata, 'vertex')
         for v in self.vertices:
-            vertexwriter.addData3f((v[0], v[2], v[1])) # swap y and z
+            vertexwriter.addData3f((v[0], v[2], v[1]))  # swap y and z
 
         if self.colors:
             colorwriter = GeomVertexWriter(vdata, 'color')
@@ -105,7 +103,6 @@ class Mesh(NodePath):
             for norm in self.normals:
                 normalwriter.addData3f((norm[0], norm[2], norm[1]))
 
-
         if self.mode != 'line' or not self._triangles:
             prim = Mesh._modes[self.mode](static_mode)
 
@@ -114,12 +111,12 @@ class Mesh(NodePath):
                     for t in self._triangles:
                         prim.addVertex(t)
 
-                elif len(self._triangles[0]) >= 3: # if tris are tuples like this: ((0,1,2), (1,2,3))
+                elif len(self._triangles[0]) >= 3:  # if tris are tuples like this: ((0,1,2), (1,2,3))
                     for t in self._triangles:
                         if len(t) == 3:
                             for e in t:
                                 prim.addVertex(e)
-                        elif len(t) == 4: # turn quad into tris
+                        elif len(t) == 4:  # turn quad into tris
                             prim.addVertex(t[0])
                             prim.addVertex(t[1])
                             prim.addVertex(t[2])
@@ -135,7 +132,7 @@ class Mesh(NodePath):
             geom.addPrimitive(prim)
             self.geomNode.addGeom(geom)
 
-        else:   # line with segments defined in triangles
+        else:  # line with segments defined in triangles
             for line in self._triangles:
                 prim = Mesh._modes[self.mode](static_mode)
                 for e in line:
@@ -144,7 +141,6 @@ class Mesh(NodePath):
                 geom = Geom(vdata)
                 geom.addPrimitive(prim)
                 self.geomNode.addGeom(geom)
-
 
         self.recipe = dedent(f'''
             Mesh(
@@ -166,15 +162,14 @@ class Mesh(NodePath):
         if other.colors:
             self.colors += other.colors
         else:
-            self.colors += (color.white, ) * len(other.vertices)
+            self.colors += (color.white,) * len(other.vertices)
 
         self.normals += other.normals
         self.uvs += other.uvs
 
-
     def __copy__(self):
-        return Mesh(self.vertices, self.triangles, self.colors, self.uvs, self.normals, self.static, self.mode, self.thickness)
-
+        return Mesh(self.vertices, self.triangles, self.colors, self.uvs, self.normals, self.static, self.mode,
+                    self.thickness)
 
     @property
     def thickness(self):
@@ -187,7 +182,7 @@ class Mesh(NodePath):
     @property
     def triangles(self):
         if self._triangles == None:
-            self._triangles = [(i, i+1, i+2) for i in range(0, len(self.vertices), 3)]
+            self._triangles = [(i, i + 1, i + 2) for i in range(0, len(self.vertices), 3)]
 
         return self._triangles
 
@@ -195,26 +190,22 @@ class Mesh(NodePath):
     def triangles(self, value):
         self._triangles = value
 
-
     def generate_normals(self, smooth=True):
         self.normals = list(generate_normals(self.vertices, self.triangles, smooth))
         self.generate()
         return self.normals
 
-
-    def colorize(self, left=color.white, right=color.blue, down=color.red, up=color.green, back=color.white, forward=color.white, smooth=True, world_space=True):
+    def colorize(self, left=color.white, right=color.blue, down=color.red, up=color.green, back=color.white,
+                 forward=color.white, smooth=True, world_space=True):
         colorize(self, left, right, down, up, back, forward, smooth, world_space)
-
 
     def project_uvs(self, aspect_ratio=1, direction='forward'):
         project_uvs(self, aspect_ratio)
-
 
     def clear(self, regenerate=True):
         self.vertices, self.triangles, self.colors, self.uvs, self.normals = list(), list(), list(), list(), list()
         if regenerate:
             self.generate()
-
 
     def save(self, name, path=application.asset_folder, filetype='ursinamesh'):
         if filetype == 'ursinamesh':
@@ -230,24 +221,22 @@ class Mesh(NodePath):
             ursina_mesh_to_obj(self, name, path)
 
 
-
-
-
 if __name__ == '__main__':
     from ursina import *
+
     app = Ursina()
 
-    verts = ((0,0,0), (1,0,0), (.5, 1, 0), (-.5,1,0))
+    verts = ((0, 0, 0), (1, 0, 0), (.5, 1, 0), (-.5, 1, 0))
     tris = (1, 2, 0, 2, 3, 0)
     uvs = ((1.0, 0.0), (0.0, 1.0), (0.0, 0.0), (1.0, 1.0))
-    norms = ((0,0,-1),) * len(verts)
+    norms = ((0, 0, -1),) * len(verts)
     colors = (color.red, color.blue, color.lime, color.black)
 
     e = Entity(model=Mesh(vertices=verts, triangles=tris, uvs=uvs, normals=norms, colors=colors), scale=2)
 
     # line mesh test
-    verts = (Vec3(0,0,0), Vec3(0,1,0), Vec3(1,1,0), Vec3(2,2,0), Vec3(0,3,0), Vec3(-2,3,0))
-    tris = ((0,1), (3,4,5))
+    verts = (Vec3(0, 0, 0), Vec3(0, 1, 0), Vec3(1, 1, 0), Vec3(2, 2, 0), Vec3(0, 3, 0), Vec3(-2, 3, 0))
+    tris = ((0, 1), (3, 4, 5))
 
     lines = Entity(model=Mesh(vertices=verts, triangles=tris, mode='line', thickness=4), color=color.cyan, z=-1)
     points = Entity(model=Mesh(vertices=verts, mode='point', thickness=6), color=color.red, z=-1.01)

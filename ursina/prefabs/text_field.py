@@ -1,4 +1,6 @@
 from ursina import *
+
+
 # from tree_view import TreeView
 
 
@@ -9,7 +11,7 @@ class TextField(Entity):
             x=-.5,
             y=.4,
             ignore_paused=True,
-            )
+        )
 
         # for key, value in kwargs.items():
         #     if key in ('font', 'font_size', 'line_height'):
@@ -21,30 +23,31 @@ class TextField(Entity):
         self.max_lines = 99999
 
         self.text_entity = Text(
-            parent = self,
+            parent=self,
             start_tag='☾',
-            end_tag = '☽',
-            font = self.font,
-            resolution = self.font_size * 2,
-            size =  1/window.fullscreen_size[1] * self.font_size,
+            end_tag='☽',
+            font=self.font,
+            resolution=self.font_size * 2,
+            size=1 / window.fullscreen_size[1] * self.font_size,
             text='',
             line_height=self.line_height,
             origin=(-.5, .5),
-            )
+        )
         self.line_numbers = Text(
-            parent = self,
-            font = self.font,
-            resolution = self.font_size * 2,
-            size = 1/window.fullscreen_size[1] * self.font_size,
+            parent=self,
+            font=self.font,
+            resolution=self.font_size * 2,
+            size=1 / window.fullscreen_size[1] * self.font_size,
             text='0',
-            origin=(.5,.5),
+            origin=(.5, .5),
             x=-.04,
             color=color.gray,
-            enabled = False,
-            )
+            enabled=False,
+        )
         self.character_width = .0111
-        self.cursor_parent = Entity(parent=self, scale=(self.character_width, -1*self.text_entity.size))
-        self.cursor = Entity(parent=self.cursor_parent, model='cube', color=color.white33, origin=(-.5, -.5), scale=(.2, 1))
+        self.cursor_parent = Entity(parent=self, scale=(self.character_width, -1 * self.text_entity.size))
+        self.cursor = Entity(parent=self.cursor_parent, model='cube', color=color.white33, origin=(-.5, -.5),
+                             scale=(.2, 1))
 
         self.selection = None
         self.selection_parent = Entity(parent=self.cursor_parent)
@@ -66,47 +69,47 @@ class TextField(Entity):
         self.on_redo = list()
 
         self.shifted_keys = {
-            '-' : '_',
-            '.' : ':',
-            ',' : ';',
-            '\'' : '*',
-            '<' : '>',
-            '+' : '?',
-            '0' : '=',
-            '1' : '!',
-            '2' : '"',
-            '3' : '#',
+            '-': '_',
+            '.': ':',
+            ',': ';',
+            '\'': '*',
+            '<': '>',
+            '+': '?',
+            '0': '=',
+            '1': '!',
+            '2': '"',
+            '3': '#',
             # '4' : '¤',
-            '5' : '%',
-            '6' : '&',
-            '7' : '/',
-            '8' : '(',
-            '9' : ')',
+            '5': '%',
+            '6': '&',
+            '7': '/',
+            '8': '(',
+            '9': ')',
         }
         self.alted_keys = {
-            '\'' : '´',
-            '0' : '}',
-            '2' : '@',
-            '3' : '£',
-            '4' : '¤',
-            '5' : '€',
-            '7' : '{',
-            '8' : '[',
-            '9' : ']',
+            '\'': '´',
+            '0': '}',
+            '2': '@',
+            '3': '£',
+            '4': '¤',
+            '5': '€',
+            '7': '{',
+            '8': '[',
+            '9': ']',
         }
         self.shortcuts = {
-            'newline':          ('enter', 'enter hold'),
-            'erase':            ('backspace', 'backspace hold'),
-            'erase_word':       ('ctrl+backspace', 'ctrl+backspace hold'),
-            'delete_line':      ('ctrl+shift+k',),
-            'undo':             ('ctrl+z', 'ctrl+z hold'),
-            'redo':             ('ctrl+y', 'ctrl+y hold', 'ctrl+shift+z', 'ctrl+shift+z hold'),
+            'newline': ('enter', 'enter hold'),
+            'erase': ('backspace', 'backspace hold'),
+            'erase_word': ('ctrl+backspace', 'ctrl+backspace hold'),
+            'delete_line': ('ctrl+shift+k',),
+            'undo': ('ctrl+z', 'ctrl+z hold'),
+            'redo': ('ctrl+y', 'ctrl+y hold', 'ctrl+shift+z', 'ctrl+shift+z hold'),
             # 'save':             ('ctrl+s',),
             # 'save_as':          ('ctrl+shift+s',),
-            'indent':           ('tab',),
-            'dedent':           ('shift+tab',),
-            'move_line_down':   ('ctrl+down arrow', 'ctrl+down arrow hold'),
-            'move_line_up':     ('ctrl+up arrow', 'ctrl+up arrow hold'),
+            'indent': ('tab',),
+            'dedent': ('shift+tab',),
+            'move_line_down': ('ctrl+down arrow', 'ctrl+down arrow hold'),
+            'move_line_up': ('ctrl+up arrow', 'ctrl+up arrow hold'),
             # 'cut':              ('ctrl+x',),
             # 'copy':             ('ctrl+c',),
             # 'paste':            ('ctrl+v',),
@@ -114,16 +117,15 @@ class TextField(Entity):
             # 'toggle_comment':   ('ctrl+alt+c',),
             # 'find':             ('ctrl+f',),
 
-            'move_left':        ('left arrow', 'left arrow hold'),
-            'move_right':       ('right arrow', 'right arrow hold'),
-            'move_up':          ('up arrow', 'up arrow hold'),
-            'move_down':        ('down arrow', 'down arrow hold'),
-            'move_to_end_of_word' : ('ctrl+right arrow', 'ctrl+right arrow hold'),
-            'move_to_start_of_word' : ('ctrl+left arrow', 'ctrl+left arrow hold'),
+            'move_left': ('left arrow', 'left arrow hold'),
+            'move_right': ('right arrow', 'right arrow hold'),
+            'move_up': ('up arrow', 'up arrow hold'),
+            'move_down': ('down arrow', 'down arrow hold'),
+            'move_to_end_of_word': ('ctrl+right arrow', 'ctrl+right arrow hold'),
+            'move_to_start_of_word': ('ctrl+left arrow', 'ctrl+left arrow hold'),
         }
 
         # self.debug_cursor = Entity(parent=self.cursor_parent, model='cube', origin=(-.5,-.5), color=color.white33)
-
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -133,13 +135,12 @@ class TextField(Entity):
 
         lines = self.text.split('\n')
         l = lines[y]
-        lines[y] =  l[:x] + s + l[x:]
+        lines[y] = l[:x] + s + l[x:]
         self.on_undo.append((self.text, y, x))
         self.text = '\n'.join(lines)
 
         if move_cursor:
             self.cursor.x += len(s)
-
 
     def move_line(self, a, b):
         x, y = int(self.cursor.x), int(self.cursor.y)
@@ -150,39 +151,36 @@ class TextField(Entity):
         self.text = '\n'.join(lines)
         # print('moved line')
 
-
     def erase(self):
         x, y = int(self.cursor.x), int(self.cursor.y)
-        if x+y == 0:
+        if x + y == 0:
             return
 
         lines = self.text.split('\n')
         l = lines[y]
         # delete \n and go to line above
         if x == 0 and y > 0:
-            new_x = len(lines[y-1])
-            lines[y-1] += l
+            new_x = len(lines[y - 1])
+            lines[y - 1] += l
             lines.remove(l)
             self.cursor.x = new_x
             self.cursor.y -= 1
         # delete tab
-        elif l[:x].lstrip() == '' and x >=4:
+        elif l[:x].lstrip() == '' and x >= 4:
             l = l[4:]
             self.cursor.x -= 4
             lines[y] = l
         # normal erase
         else:
-            removed = l[x-1]
+            removed = l[x - 1]
 
-            l = l[:x-1] + l[x:]
+            l = l[:x - 1] + l[x:]
             self.cursor.x -= 1
 
             lines[y] = l
 
         self.on_undo.append((self.text, y, x))
         self.text = '\n'.join(lines)
-
-
 
     def input(self, key):
         text, cursor, on_undo, add_text, erase = self.text, self.cursor, self.on_undo, self.add_text, self.erase
@@ -195,7 +193,7 @@ class TextField(Entity):
         if held_keys['alt'] and key != 'alt':
             alt = 'alt+'
 
-        key = ctrl+shift+alt+key
+        key = ctrl + shift + alt + key
         # print(key)
         x, y = int(cursor.x), int(cursor.y)
         lines = text.split('\n')
@@ -204,13 +202,13 @@ class TextField(Entity):
         if key in self.shortcuts['move_up']:
             if y > 0:
                 cursor.y -= 1
-                cursor.x = min(x, len(lines[y-1]))
+                cursor.x = min(x, len(lines[y - 1]))
         if key in self.shortcuts['move_down']:
-            if y < len(lines)-1:
+            if y < len(lines) - 1:
                 cursor.y += 1
-                cursor.x = min(x, len(lines[y+1]))
+                cursor.x = min(x, len(lines[y + 1]))
         if key in self.shortcuts['move_right']:
-            if x == len(l) and y < len(lines)-1:        # end of line, move to beginning of next
+            if x == len(l) and y < len(lines) - 1:  # end of line, move to beginning of next
                 cursor.y += 1
                 cursor.x = 0
             elif x < len(l):
@@ -218,24 +216,24 @@ class TextField(Entity):
         if key in self.shortcuts['move_left']:
             if x > 0:
                 cursor.x -= 1
-            elif y > 0:                                 # move to end of line above
+            elif y > 0:  # move to end of line above
                 cursor.y -= 1
-                cursor.x = len(lines[y-1])
+                cursor.x = len(lines[y - 1])
 
         delimiters = (' ', '.')
         if key in self.shortcuts['move_to_end_of_word']:
-            if x == len(l) and y < len(lines)-1:        # end of line, move to beginning of next
+            if x == len(l) and y < len(lines) - 1:  # end of line, move to beginning of next
                 cursor.y += 1
                 cursor.x = 0
                 return
 
-            elif l[x] not in delimiters:                # move right to closest delimiter
+            elif l[x] not in delimiters:  # move right to closest delimiter
                 for x in range(x, len(l)):
                     if l[x] in delimiters:
                         cursor.x = x
                         return
                 cursor.x = len(l)
-            else:                                       # move right to closest word
+            else:  # move right to closest word
                 for x in range(x, len(l)):
                     if l[x] not in delimiters:
                         cursor.x = x
@@ -243,24 +241,23 @@ class TextField(Entity):
                 cursor.x = len(l)
 
         if key in self.shortcuts['move_to_start_of_word']:
-            if x == 0 and y > 0:                        # move to end of line above
+            if x == 0 and y > 0:  # move to end of line above
                 cursor.y -= 1
-                cursor.x = len(lines[y-1])
+                cursor.x = len(lines[y - 1])
                 return
 
-            elif l[x-1] not in delimiters:              # move left to closest delimiter
-                for x in range(x-1, 0, -1):
+            elif l[x - 1] not in delimiters:  # move left to closest delimiter
+                for x in range(x - 1, 0, -1):
                     if l[x] in delimiters:
-                        cursor.x = x+1
+                        cursor.x = x + 1
                         return
                 cursor.x = 0
-            else:                                       # move left to closest word
-                for x in range(x-1, 0, -1):
+            else:  # move left to closest word
+                for x in range(x - 1, 0, -1):
                     if l[x] not in delimiters:
-                        cursor.x = x+1
+                        cursor.x = x + 1
                         return
                 cursor.x = 0
-
 
         k = key.replace(' hold', '')
         k = k.replace('shift+', '')
@@ -296,7 +293,6 @@ class TextField(Entity):
             if k == '{':
                 add_text('}')
 
-
         if key in ('space', 'space hold'):
             add_text(' ')
 
@@ -317,31 +313,30 @@ class TextField(Entity):
 
             self.cursor.y += 1
             self.cursor.x = 0
-            add_text(' '*indent)
+            add_text(' ' * indent)
             # self.cursor.x = indent
 
         if key in self.shortcuts['indent']:
             if self.selection == None or self.selection[0] == self.selection[1]:
-                add_text(' '*4, move_cursor=True)
+                add_text(' ' * 4, move_cursor=True)
 
             else:
-                for y in range(self.selection[0][1], self.selection[1][1]+1):
+                for y in range(self.selection[0][1], self.selection[1][1] + 1):
                     # print('indent', y)
-                    lines[y] = (' '*4) + lines[y]
+                    lines[y] = (' ' * 4) + lines[y]
 
                 self.cursor.x += 4
                 self.on_undo.append((self.text, y, x))
                 self.text = '\n'.join(lines)
 
-
         if key in self.shortcuts['dedent']:
             if self.selection == None:
-                if l.startswith(' '*4):
+                if l.startswith(' ' * 4):
                     lines[y] = l[4:]
             else:
-                for y in range(self.selection[0][1], self.selection[1][1]+1):
+                for y in range(self.selection[0][1], self.selection[1][1] + 1):
                     l = lines[y]
-                    if l.startswith(' '*4):
+                    if l.startswith(' ' * 4):
                         # print('dedent')
                         lines[y] = l[4:]
 
@@ -349,7 +344,6 @@ class TextField(Entity):
             self.cursor.x = max(self.cursor.x, 0)
             self.on_undo.append((self.text, y, x))
             self.text = '\n'.join(lines)
-
 
         if key in self.shortcuts['erase']:
             erase()
@@ -370,7 +364,7 @@ class TextField(Entity):
 
                 if beginning.endswith('  '):
                     beginning = beginning.rstrip()
-                    removed = ' ' * (x-len(beginning))
+                    removed = ' ' * (x - len(beginning))
 
                 for delimiter in ('.', '\'', '\"'):
                     beginning = beginning.replace(delimiter, ' ')
@@ -381,24 +375,21 @@ class TextField(Entity):
                 l = beginning + l[x:]
                 self.cursor.x -= len(removed)
 
-
             lines[y] = l
             self.on_undo.append((self.text, y, x))
             self.text = '\n'.join(lines)
 
-
         if key in self.shortcuts['move_line_down'] and self.cursor.y < self.max_lines:
             # print('move down')
-            if y+1 == len(lines): # if at last line
+            if y + 1 == len(lines):  # if at last line
                 self.text += '\n'
 
-            self.move_line(y, y+1)
+            self.move_line(y, y + 1)
             cursor.y += 1
 
         if key in self.shortcuts['move_line_up'] and y > 0:
-            self.move_line(y, y-1)
+            self.move_line(y, y - 1)
             cursor.y -= 1
-
 
         if key in self.shortcuts['undo']:
             if not on_undo:
@@ -418,14 +409,13 @@ class TextField(Entity):
         #     cursor.x = self.on_redo[-1][2]
         #     self.on_redo.pop()
 
-
         if key in self.shortcuts['delete_line']:
             lines.pop(y)
 
             if y == 0:
                 self.cursor.x = 0
             else:
-                self.cursor.x = len(lines[y-1])
+                self.cursor.x = len(lines[y - 1])
 
             if y >= len(lines) and y > 0:
                 self.cursor.y -= 1
@@ -441,7 +431,6 @@ class TextField(Entity):
                 cursor.position = click_position
                 self.selection = [click_position, click_position]
 
-
             if key == 'left mouse up':
                 # if mouse.x < self.x:
                 #     return
@@ -451,10 +440,9 @@ class TextField(Entity):
 
         self.render()
 
-
     def render(self):
         lines = self.text.split('\n')
-        text = '\n'.join(lines[0:self.max_lines+1])
+        text = '\n'.join(lines[0:self.max_lines + 1])
 
         if self.replacements:
             self.text_entity.text = multireplace(text, self.replacements)
@@ -463,13 +451,14 @@ class TextField(Entity):
         self.line_numbers.text = '\n'.join([str(e) for e in range(min(len(lines), self.max_lines))])
         self.line_numbers.color = color.gray
 
-
     def get_mouse_position(self):
         lines = self.text.split('\n')
-        y = clamp(abs(math.floor((-mouse.y  + self.get_position(camera.ui)[1]) / self.text_entity.size)), 0, len(lines)-1)
-        x = clamp(round(((mouse.x) - self.get_position(camera.ui)[0]) / self.character_width / (self.world_scale_x/20)), 0, len(lines[y]))
-        return (x,y)
-
+        y = clamp(abs(math.floor((-mouse.y + self.get_position(camera.ui)[1]) / self.text_entity.size)), 0,
+                  len(lines) - 1)
+        x = clamp(
+            round(((mouse.x) - self.get_position(camera.ui)[0]) / self.character_width / (self.world_scale_x / 20)), 0,
+            len(lines[y]))
+        return (x, y)
 
     def update(self):
         # self.debug_cursor.position = self.get_mouse_position()
@@ -478,15 +467,13 @@ class TextField(Entity):
             click_position = self.get_mouse_position()
             self.draw_selection()
 
-
     def select_all(self):
         lines = self.text.split('\n')
         lines = self.text.splitlines()
         # print('|||||||||', len(lines), len(self.text.splitlines()), self.text.splitlines(), lines)
         if lines:
-            self.selection = ((0,0), (len(lines[-1]), len(lines)))
+            self.selection = ((0, 0), (len(lines[-1]), len(lines)))
             print(self.selection)
-
 
     def draw_selection(self):
         [destroy(c) for c in self.selection_parent.children]
@@ -494,25 +481,22 @@ class TextField(Entity):
         if self.selection == None:
             return
 
-
         if self.selection[0] == self.selection[1]:
             return
 
         start_y = self.selection[0][1]
         end_y = self.selection[1][1]
 
-        if start_y == end_y:    # one line
+        if start_y == end_y:  # one line
             e = Entity(parent=self.selection_parent, model='cube', origin=(-.5, -.5),
-                color=color.color(120,1,1,.1), double_sided=True, position=(self.selection[0][0],start_y),
-                ignore=True, scale_x=self.selection[1][0]-self.selection[0][0])
+                       color=color.color(120, 1, 1, .1), double_sided=True, position=(self.selection[0][0], start_y),
+                       ignore=True, scale_x=self.selection[1][0] - self.selection[0][0])
 
             return
         # draw selection
         for y in range(self.selection[0][1], self.selection[1][1]):
-
             e = Entity(parent=self.selection_parent, model='cube', origin=(-.5, -.5),
-                color=color.color(120,1,1,.1), double_sided=True, position=(0,y), ignore=True, scale_x=99)
-
+                       color=color.color(120, 1, 1, .1), double_sided=True, position=(0, y), ignore=True, scale_x=99)
 
 
 if __name__ == '__main__':
@@ -526,9 +510,9 @@ if __name__ == '__main__':
     Button.color = color._20
     window.color = color._25
 
-    Text.size = 1/window.fullscreen_size[1]*16
+    Text.size = 1 / window.fullscreen_size[1] * 16
     Text.default_font = 'consola.ttf'
-    Text.default_resolution = 16*2
+    Text.default_resolution = 16 * 2
     # TreeView()
     te = TextField(max_lines=3)
     te.line_numbers.enabled = True
@@ -547,7 +531,7 @@ if __name__ == '__main__':
     #     '    ':      '☾dark_gray☽----☾default☽',
     #     }
     #
-    te.text = 'yolo test 123 yes no.\n'*10
+    te.text = 'yolo test 123 yes no.\n' * 10
     # te.cursor.position = (4,0)
     te.render()
     # te.selection = ((0,0),(4,0))

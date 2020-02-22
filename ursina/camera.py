@@ -27,7 +27,6 @@ class Camera(Entity):
         self.fov = 40
         self.orthographic = False
 
-
     def set_up(self):
         self.display_region = base.camNode.get_display_region(0)
         win = self.display_region.get_window()
@@ -71,13 +70,12 @@ class Camera(Entity):
         # self.black_bars_display_region = win.make_display_region()
         # self.black_bars_display_region.set_sort(-100)
 
-        self.ui = Entity(eternal=True, name='ui', parent=self.ui_camera, scale=(self.ui_size*.5, self.ui_size*.5))
+        self.ui = Entity(eternal=True, name='ui', parent=self.ui_camera, scale=(self.ui_size * .5, self.ui_size * .5))
         scene.ui = self.ui
 
         self.filter_manager = FilterManager(base.win, base.cam)
         self.render_texture = PandaTexture()
         self.filter_quad = None
-
 
     @property
     def orthographic(self):
@@ -96,7 +94,6 @@ class Camera(Entity):
             application.base.cam.node().set_lens(self.perspective_lens)
 
         self.fov = self.fov
-
 
     @property
     def fov(self):
@@ -148,7 +145,6 @@ class Camera(Entity):
         # self.orthographic_lens = OrthographicLens()
         # self.orthographic_lens.set_film_size(self.fov * value, self.fov)
 
-
     @property
     def shader(self):
         return self.filter_quad.get_shader()
@@ -167,17 +163,15 @@ class Camera(Entity):
         self.filter_quad.setShader(value)
         self.filter_quad.setShaderInput("tex", self.render_texture)
 
-
     def set_shader_input(self, name, value):
         self.filter_quad.setShaderInput(name, value)
 
 
-
 sys.modules[__name__] = Camera()
-
 
 if __name__ == '__main__':
     from ursina.main import Ursina
+
     app = Ursina()
     # app.load_editor()
     scene.camera.orthographic = True

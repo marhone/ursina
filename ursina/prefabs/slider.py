@@ -16,35 +16,33 @@ class Slider(Entity):
         self.label = Text(parent=self, origin=(0.5, 0), x=-0.025, text=text)
         bg_color = color.black66
         self.bg = Button(
-            parent = self,
-            model = Quad(scale=(.525, height), radius=Text.size/2, segments=3),
-            origin_x = -0.25,
-            pressed_scale = 1,
-            color = bg_color,
-            highlight_color = bg_color,
-            pressed_color = bg_color,
-            )
-
+            parent=self,
+            model=Quad(scale=(.525, height), radius=Text.size / 2, segments=3),
+            origin_x=-0.25,
+            pressed_scale=1,
+            color=bg_color,
+            highlight_color=bg_color,
+            pressed_color=bg_color,
+        )
 
         self.bg.on_click = '''
             self.parent.knob.x = mouse.point[0] * self.scale_x
             self.parent.knob.dragging = True
             '''
         self.knob = Draggable(
-            parent = self,
-            min_x = 0,
-            max_x = .5,
-            min_y = 0,
-            max_y = .5,
-            step = self.step,
-            model = Quad(radius=Text.size/2, scale=(Text.size, height)),
-            collider = 'box',
-            color = color.light_gray,
-            text = "0",
-            text_origin = (0, -.55),
-            z = -.1
-            )
-
+            parent=self,
+            min_x=0,
+            max_x=.5,
+            min_y=0,
+            max_y=.5,
+            step=self.step,
+            model=Quad(radius=Text.size / 2, scale=(Text.size, height)),
+            collider='box',
+            color=color.light_gray,
+            text="0",
+            text_origin=(0, -.55),
+            z=-.1
+        )
 
         def drop():
             if hasattr(self, 'on_value_changed'):
@@ -55,7 +53,6 @@ class Slider(Entity):
         self.value = self.default
         self.dynamic = dynamic
 
-
         self.knob.text_entity.text = str(round(self.default, 2))
 
         for key, value in kwargs.items():
@@ -64,14 +61,13 @@ class Slider(Entity):
         if self.vertical:
             self.rotation_z = -90
             self.label.rotation_z = 90
-            self.label.origin = (0,0)
+            self.label.origin = (0, 0)
             self.knob.lock_x = True
             self.knob.text_entity.rotation_z = 90
-            self.knob.text_entity.position = (.015,0)
+            self.knob.text_entity.position = (.015, 0)
         else:
             self.knob.lock_y = True
-            self.knob.text_entity.y = height/2
-
+            self.knob.text_entity.y = height / 2
 
     @property
     def value(self):
@@ -93,7 +89,7 @@ class Slider(Entity):
     @step.setter
     def step(self, value):
         self._step = value
-        self.knob.step = value / (self.max-self.min) / 2
+        self.knob.step = value / (self.max - self.min) / 2
 
     def update(self):
         if self.knob.dragging:
@@ -111,8 +107,6 @@ class Slider(Entity):
             self.on_value_changed()
             self._prev_value = t
 
-
-
     def __setattr__(self, name, value):
         if name == 'eternal':
             try:
@@ -127,12 +121,11 @@ class Slider(Entity):
             return e
 
 
-
 class ThinSlider(Slider):
     def __init__(self, *args, **kwargs):
         kwargs['height'] = Text.size
         super().__init__(*args, **kwargs)
-        self.bg.model = Quad(scale=(.525, Text.size/10), radius=Text.size/10, segments=3)
+        self.bg.model = Quad(scale=(.525, Text.size / 10), radius=Text.size / 10, segments=3)
         self.bg.origin_x = -0.25
         self.bg.color = color.text_color
         self.bg.highlight_color = color.text_color
@@ -140,14 +133,12 @@ class ThinSlider(Slider):
         self.label.color = color.text_color
 
 
-
-
 if __name__ == '__main__':
     app = Ursina()
     # color.text_color = color.dark_text
     # origin = Entity(model='cube', color=color.green, scale = .05)
     # box = Entity(model='cube', origin_y=-.5, scale=1, color=color.orange)
-    slider = Slider(0, 255, default=10, height=Text.size*3, y=-.4, step=1   )
+    slider = Slider(0, 255, default=10, height=Text.size * 3, y=-.4, step=1)
     slider = Slider(1, 2, default=1.2, x=-.4, y=-.47, text='contrast', dynamic=True)
     # thin_slider = ThinSlider(0, 255, default=1, text='thin_slider', height=Text.size*3, y=-.4, step=1, vertical=False, x=-.7)
     # Text('debug text')

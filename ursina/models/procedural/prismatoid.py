@@ -3,7 +3,8 @@ from ursina.duplicate import duplicate
 
 
 class Prismatoid(Mesh):
-    def __init__(self, base_shape=Quad, origin=(0,0), path=((0,0,0),(0,1,0)), thicknesses=((1,1),), look_at=True, mode='triangle', **kwargs):
+    def __init__(self, base_shape=Quad, origin=(0, 0), path=((0, 0, 0), (0, 1, 0)), thicknesses=((1, 1),), look_at=True,
+                 mode='triangle', **kwargs):
         if type(base_shape) == type:
             base_shape = base_shape()
 
@@ -23,18 +24,18 @@ class Prismatoid(Mesh):
         for i in range(len(b.children)):
             verts.append(path[0])
             verts.append(b.children[i].world_position)
-            if i >= len(b.children)-1:
+            if i >= len(b.children) - 1:
                 verts.append(b.children[0].world_position)
             else:
-                verts.append(b.children[i+1].world_position)
+                verts.append(b.children[i + 1].world_position)
 
         for i in range(1, len(path)):
-            b.position = path[i-1]
+            b.position = path[i - 1]
             if look_at:
                 b.look_at(path[i])
             e.position = path[i]
-            if i+1 < len(path) and look_at:
-                e.look_at(path[i+1])
+            if i + 1 < len(path) and look_at:
+                e.look_at(path[i + 1])
 
             # for debugging sections
             # clone = duplicate(e)
@@ -43,13 +44,13 @@ class Prismatoid(Mesh):
 
             try:
                 e.scale = thicknesses[i]
-                b.scale = thicknesses[i-1]
+                b.scale = thicknesses[i - 1]
             except:
                 pass
 
             for j in range(len(e.children)):
-                n = j+1
-                if j == len(e.children)-1:
+                n = j + 1
+                if j == len(e.children) - 1:
                     n = 0
                 verts.append(e.children[j].world_position)
                 verts.append(b.children[n].world_position)
@@ -61,25 +62,23 @@ class Prismatoid(Mesh):
 
         # cap end
         for i in range(len(e.children)):
-            if i >= len(e.children)-1:
+            if i >= len(e.children) - 1:
                 verts.append(e.children[0].world_position)
             else:
-                verts.append(e.children[i+1].world_position)
+                verts.append(e.children[i + 1].world_position)
             verts.append(e.children[i].world_position)
             verts.append(path[-1])
-
 
         super().__init__(vertices=verts, mode=mode, **kwargs)
         destroy(b)
         destroy(e)
 
 
-
 if __name__ == '__main__':
     app = Ursina()
     # e = Entity(model=Prism(mode='line'))
-    path = (Vec3(0,0,0), Vec3(0,1,0), Vec3(0,3,0), Vec3(0,4,0), Vec3(2,5,0))
-    thicknesses = ((1,1), (.5,.5), (.75,.75), (.5,.5), (1,1))
+    path = (Vec3(0, 0, 0), Vec3(0, 1, 0), Vec3(0, 3, 0), Vec3(0, 4, 0), Vec3(2, 5, 0))
+    thicknesses = ((1, 1), (.5, .5), (.75, .75), (.5, .5), (1, 1))
     e = Entity(model=Prismatoid(path=path, thicknesses=thicknesses))
     e.model.colorize()
     # e2 = duplicate(e)

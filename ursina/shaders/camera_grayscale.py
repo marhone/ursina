@@ -1,6 +1,5 @@
 from panda3d.core import Shader
 
-
 camera_grayscale_shader = Shader.make('''
 
 void vshader(float4 vtx_position : POSITION,
@@ -27,10 +26,9 @@ void fshader(float2 l_texcoord0 : TEXCOORD0,
 
 ''', Shader.SL_Cg)
 
-
-
 if __name__ == '__main__':
     from ursina import *
+
     app = Ursina()
 
     e = Entity(model='sphere', color=color.orange)

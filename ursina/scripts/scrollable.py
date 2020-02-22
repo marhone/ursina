@@ -1,5 +1,6 @@
 from ursina import *
 
+
 class Scrollable():
 
     def __init__(self, **kwargs):
@@ -7,11 +8,10 @@ class Scrollable():
         self.max = math.inf
         self.min = -math.inf
         self.scroll_speed = .1
-        self.direction = (0,1,0)
+        self.direction = (0, 1, 0)
 
         for key, value in kwargs.items():
             setattr(self, key, value)
-
 
     @property
     def direction(self):
@@ -21,7 +21,6 @@ class Scrollable():
     def direction(self, value):
         value = Vec3(value[0], value[1], value[2] if len(value) == 3 else 0)
         self._direction = value
-
 
     def input(self, key):
         if not mouse.hovered_entity:

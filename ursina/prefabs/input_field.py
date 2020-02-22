@@ -6,15 +6,14 @@ class InputField(Button):
     def __init__(self, default_value='', label='', **kwargs):
         super().__init__(
             scale=(.5, Text.size * 2),
-            highlight_scale = 1,
-            pressed_scale = 1,
-            )
+            highlight_scale=1,
+            pressed_scale=1,
+        )
         for key, value in kwargs.items():
             if 'scale' in key:
                 setattr(self, key, value)
 
         self.default_value = default_value
-
 
         self.text_field = TextField(world_parent=self, x=-.45, y=.3, z=-.1, max_lines=1)
         self.text_field.scale *= 2
@@ -27,7 +26,6 @@ class InputField(Button):
         if label:
             self.label = Text('Label:')
             self.text_field.x += 5
-
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -66,8 +64,10 @@ if __name__ == '__main__':
     input_field = InputField(default_value='ælol')
     print(input_field.default_value)
 
+
     def submit():
         print(input_field.text)
+
 
     Button('submit', scale=.1, color=color.azure, y=-.2, on_click=submit).fit()
 

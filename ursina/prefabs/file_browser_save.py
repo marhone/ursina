@@ -11,24 +11,22 @@ class FileBrowserSave(FileBrowser):
         self.save_button.text = 'Save'
         self.save_button.on_click = self.save
         self.file_name_field = InputField(
-            parent = self,
-            scale_x = .75,
-            scale_y = self.save_button.scale_y,
-            y = self.save_button.y,
-            active = True,
-            )
+            parent=self,
+            scale_x=.75,
+            scale_y=self.save_button.scale_y,
+            y=self.save_button.y,
+            active=True,
+        )
         # self.file_name_field.text_field.scale *= .6
         self.save_button.y -= .075
         self.cancel_button.y -= .075
         self.file_name_field.text_field.text = ''
-        self.file_type = '' # to save as
+        self.file_type = ''  # to save as
 
         self.data = ''
 
         for key, value in kwargs.items():
-            setattr(self, key ,value)
-
-
+            setattr(self, key, value)
 
     def save(self):
         file_name = self.file_name_field.text_field.text
@@ -51,10 +49,9 @@ class FileBrowserSave(FileBrowser):
             self.close()
 
 
-
-
 if __name__ == '__main__':
     from ursina import *
+
     app = Ursina()
-    FileBrowserSave(file_type = '.oto')
+    FileBrowserSave(file_type='.oto')
     app.run()

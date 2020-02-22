@@ -15,11 +15,8 @@ class Cursor(Entity):
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-
     def update(self):
         self.position = (mouse.x, mouse.y, -100)
-
-
 
 
 if __name__ == '__main__':

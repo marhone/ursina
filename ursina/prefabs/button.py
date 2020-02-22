@@ -4,7 +4,6 @@ import textwrap
 
 
 class Button(Entity):
-
     color = color.black66
 
     def __init__(self, text='', **kwargs):
@@ -14,10 +13,9 @@ class Button(Entity):
         self.disabled = False
         self._on_click = None
 
-        for key, value in kwargs.items():   # set the scale before model for correct corners
+        for key, value in kwargs.items():  # set the scale before model for correct corners
             if key in ('scale', 'scale_x', 'scale_y', 'scale_z',
-            'world_scale', 'world_scale_x', 'world_scale_y', 'world_scale_z'):
-
+                       'world_scale', 'world_scale_x', 'world_scale_y', 'world_scale_z'):
                 setattr(self, key, value)
 
         if not 'model' in kwargs and self.scale[0] != 0 and self.scale[1] != 0:
@@ -32,8 +30,8 @@ class Button(Entity):
             setattr(self, 'color', kwargs['color'])
         self.highlight_color = self.color.tint(.2)
         self.pressed_color = self.color.tint(-.2)
-        self.highlight_scale = 1    # multiplier
-        self.pressed_scale = .9     # multiplier
+        self.highlight_scale = 1  # multiplier
+        self.pressed_scale = .9  # multiplier
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -52,20 +50,20 @@ class Button(Entity):
         if type(value) is str:
             if not self.text_entity:
                 self.text_entity = Text(
-                    parent = self,
-                    size = Text.size * 20,
-                    position = (-self.origin[0], -self.origin[1], -.1),
-                    origin = (0,0),
-                    add_to_scene_entities = False,
-                    )
+                    parent=self,
+                    size=Text.size * 20,
+                    position=(-self.origin[0], -self.origin[1], -.1),
+                    origin=(0, 0),
+                    add_to_scene_entities=False,
+                )
 
             self.text_entity.text = value
-            self.text_entity.world_scale = (1,1,1)
+            self.text_entity.world_scale = (1, 1, 1)
 
     @property
     def text_origin(self):
         if not self.text_entity:
-            return(0,0)
+            return (0, 0)
 
         return self.text_entity.origin
 
@@ -78,7 +76,6 @@ class Button(Entity):
         # self.text_entity.x += self.model.radius * self.scale_y/self.scale_x * (-value[0]*2)
         # self.text_entity.y += self.model.radius * self.scale_y/self.scale_x * (-value[1]*2)
         self.text_entity.origin = value
-
 
     def __setattr__(self, name, value):
         if name == 'color':
@@ -96,11 +93,10 @@ class Button(Entity):
             else:
                 super().__setattr__(name, value)
 
-            try:    # update collider position by making a new one
+            try:  # update collider position by making a new one
                 self.collider = 'box'
             except Exception as e:
                 return e
-
 
         if name == 'on_click':
             self._on_click = value
@@ -115,7 +111,6 @@ class Button(Entity):
             super().__setattr__(name, value)
         except Exception as e:
             return e
-
 
     def input(self, key):
         if self.disabled:
@@ -132,8 +127,7 @@ class Button(Entity):
                 self.model.setScale(Vec3(self.highlight_scale, 1, self.highlight_scale))
             else:
                 self.model.setColorScale(self.color)
-                self.model.setScale(Vec3(1,1,1))
-
+                self.model.setScale(Vec3(1, 1, 1))
 
     def on_mouse_enter(self):
         if not self.disabled:
@@ -143,10 +137,9 @@ class Button(Entity):
                 self.scale = self.original_scale * self.highlight_scale
 
         if hasattr(self, 'tooltip'):
-            self.tooltip.scale = (0,0,0)
+            self.tooltip.scale = (0, 0, 0)
             self.tooltip.enabled = True
             self.tooltip.animate_scale(self.tooltip.original_scale)
-
 
     def on_mouse_exit(self):
         if not self.disabled:
@@ -176,7 +169,6 @@ class Button(Entity):
         elif isinstance(action, str):
             exec(textwrap.dedent(action))
 
-
     def fit(self):
         if not self.text_entity.text or self.text_entity.text == '':
             return
@@ -185,19 +177,19 @@ class Button(Entity):
         self.scale = (
             (self.text_entity.width * Text.size * 2) + self.text_entity.height * Text.size * 2,
             self.text_entity.height * Text.size * 2 * 2
-            )
-        self.model = Quad(aspect=self.scale_x/self.scale_y)
+        )
+        self.model = Quad(aspect=self.scale_x / self.scale_y)
         self.text_entity.world_parent = self
         # print('fit to text', self.scale)
 
 
-
 if __name__ == '__main__':
     from ursina import *
+
     app = Ursina()
 
     # e = Entity(parent=camera.ui, scale=.1)
-    b = Button(text='hello world!', color=color.azure, origin=(0,0))
+    b = Button(text='hello world!', color=color.azure, origin=(0, 0))
     # print('-----------------', b.eternal)
     # b.fit()
     b.on_click = application.quit

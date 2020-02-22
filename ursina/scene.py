@@ -3,6 +3,8 @@ from panda3d.core import NodePath
 from panda3d.core import Fog
 from ursina import color
 from ursina.texture_importer import load_texture
+
+
 # from ursina.ursinastuff import destroy
 # from ursina.entity import Entity
 
@@ -23,7 +25,6 @@ class Scene(NodePath):
         self.hidden = NodePath('hidden')
         self.reflection_map = 'reflection_map_3'
 
-
     def set_up(self):
         from ursina.entity import Entity
         self.reparent_to(render)
@@ -33,7 +34,6 @@ class Scene(NodePath):
         self.setFog(self.fog)
         self.fog_color = color.light_gray
         self.fog_density = 0
-
 
     def clear(self):
         from ursina.ursinastuff import destroy
@@ -47,12 +47,10 @@ class Scene(NodePath):
             except Exception as e:
                 print('failed to destroy entity', e)
 
-
         self.entities = to_keep
 
         from ursina import application
         application.sequences.clear()
-
 
     @property
     def fog_color(self):
@@ -62,7 +60,6 @@ class Scene(NodePath):
     def fog_color(self, value):
         self.fog.setColor(value)
 
-
     @property
     def fog_density(self):
         return self._fog_density
@@ -70,7 +67,7 @@ class Scene(NodePath):
     @fog_density.setter
     def fog_density(self, value):
         self._fog_density = value
-        if isinstance(value, tuple):     # linear fog
+        if isinstance(value, tuple):  # linear fog
             self.fog.setLinearRange(value[0], value[1])
         else:
             self.fog.setExpDensity(value)
@@ -78,21 +75,22 @@ class Scene(NodePath):
 
 sys.modules[__name__] = Scene()
 
-
-
 if __name__ == '__main__':
     from ursina import *
+
     app = Ursina()
     # yolo = Button(name='yolo', text='yolo')
     e = Entity(model='plane', color=color.black, scale=100)
     EditorCamera()
     s = Sky()
 
+
     def input(key):
         if key == 'd':
             scene.clear()
 
-    scene.fog_density = .1          # sets exponential density
-    scene.fog_density = (50, 200)   # sets linear density start and end
+
+    scene.fog_density = .1  # sets exponential density
+    scene.fog_density = (50, 200)  # sets linear density start and end
 
     app.run()

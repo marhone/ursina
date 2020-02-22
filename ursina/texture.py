@@ -6,11 +6,12 @@ from pathlib import Path
 from direct.showbase import Loader
 import sys
 from ursina import color
+
+
 # from PIL import Image
 
 
 class Texture():
-
     default_filtering = 'bilinear'
 
     def __init__(self, value):
@@ -21,7 +22,7 @@ class Texture():
         if isinstance(value, Path):
             self.path = Path(value)
             self._texture = loader.loadTexture(Filename.fromOsSpecific(str(value)))
-            self._cached_image = None   # for get_pixel() method
+            self._cached_image = None  # for get_pixel() method
 
         elif isinstance(value, PandaTexture):
             self._texture = value
@@ -35,10 +36,7 @@ class Texture():
             self._cached_image = image.transpose(Image.FLIP_TOP_BOTTOM)
             self.path = None
 
-
-
         self.filtering = Texture.default_filtering
-
 
     @property
     def name(self):
@@ -79,7 +77,6 @@ class Texture():
         pixels = flip(pixels, axis=0)
         return pixels
 
-
     @property
     def filtering(self):
         return self._filtering
@@ -99,16 +96,13 @@ class Texture():
             self._texture.setMinfilter(SamplerState.FT_linear_mipmap_linear)
             self._filtering = 'mipmap'
 
-
-
     def get_pixel(self, x, y):
         try:
             if not self._cached_image:
                 from PIL import Image
                 self._cached_image = Image.open(self.path)
 
-
-            col = self._cached_image.getpixel((x, self.height-y-1))
+            col = self._cached_image.getpixel((x, self.height - y - 1))
             if self._cached_image.mode == 'LA':
                 col = (col[0], col[0], col[0], col[1])
 
@@ -119,7 +113,6 @@ class Texture():
         except:
             return None
 
-
     def get_pixels(self, start, end):
         start = (clamp(start[0], 0, self.width), clamp(start[1], 0, self.width))
         end = (clamp(end[0], 0, self.width), clamp(end[1], 0, self.width))
@@ -127,7 +120,7 @@ class Texture():
 
         for y in range(start[1], end[1]):
             for x in range(start[0], end[0]):
-                pixels.append(self.get_pixel(x,y))
+                pixels.append(self.get_pixel(x, y))
 
         return pixels
 
@@ -136,14 +129,15 @@ class Texture():
             from PIL import Image
             self._cached_image = Image.open(self.path)
 
-        self._cached_image.putpixel((x, self.height-y-1), tuple([int(e*255) for e in color]))
+        self._cached_image.putpixel((x, self.height - y - 1), tuple([int(e * 255) for e in color]))
 
     def apply(self):
         from PIL import Image
         if not self._cached_image:
             self._cached_image = Image.open(self.path)
 
-        self._texture.setRamImageAs(self._cached_image.transpose(Image.FLIP_TOP_BOTTOM).tobytes(), self._cached_image.mode)
+        self._texture.setRamImageAs(self._cached_image.transpose(Image.FLIP_TOP_BOTTOM).tobytes(),
+                                    self._cached_image.mode)
         # self._texture.setRamImageAs(self._cached_image.tobytes(), self._cached_image.mode)
 
     def save(self, path):
@@ -153,8 +147,10 @@ class Texture():
 
         self._cached_image.save(path)
 
+
 if __name__ == '__main__':
     from ursina import *
+
     app = Ursina()
     '''
         The Texture class rarely used manually but usually instantiated
@@ -170,8 +166,7 @@ if __name__ == '__main__':
 
     for y in range(e.texture.height):
         for x in range(e.texture.width):
-            if e.texture.get_pixel(x,y) == color.blue:
+            if e.texture.get_pixel(x, y) == color.blue:
                 print('found blue pixel at:', x, y)
-
 
     app.run()

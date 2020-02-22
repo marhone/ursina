@@ -1,6 +1,5 @@
 from panda3d.core import Shader
 
-
 normals_shader = Shader.make('''
 
 void vshader(float4 vtx_position : POSITION,
@@ -59,13 +58,12 @@ void fshader(
 
 ''', Shader.SL_Cg)
 
-
-
 if __name__ == '__main__':
     from ursina import *
     from ursina.prefabs.primitives import *
+
     app = Ursina()
-    window.color=color.black
+    window.color = color.black
 
     # e = Entity(model='sphere', shader=normals_shader)
     # e.setShaderInput('object_matrix', e.getNetTransform().getMat())
@@ -82,9 +80,12 @@ if __name__ == '__main__':
     Sky(color=color.light_gray)
     EditorCamera()
 
+
     def update():
         b.rotation_y += 1
         b.set_shader_input('object_matrix', b.getNetTransform().getMat())
+
+
     # EditorCamera()
 
     app.run()

@@ -8,12 +8,12 @@ import ast
 
 
 def is_valid_python(code):
-   try:
-       ast.parse(code)
-   except Exception as e:
-       return False, e
+    try:
+        ast.parse(code)
+    except Exception as e:
+        return False, e
 
-   return True
+    return True
 
 
 def make_code_reload_safe(code):
@@ -21,7 +21,8 @@ def make_code_reload_safe(code):
     dedent_next = False
 
     for line in code.split('\n'):
-        if line.strip().endswith('Ursina()') or line.strip().endswith('app.run()') or line.strip().endswith('HotReloader()'):
+        if line.strip().endswith('Ursina()') or line.strip().endswith('app.run()') or line.strip().endswith(
+                'HotReloader()'):
             continue
         if 'eternal=True' in line:
             continue
@@ -39,7 +40,6 @@ def make_code_reload_safe(code):
     return newtext
 
 
-
 class HotReloader(Entity):
     def __init__(self, path=__file__, **kwargs):
         super().__init__()
@@ -51,9 +51,8 @@ class HotReloader(Entity):
             setattr(self, key, value)
 
         self.path = Path(self.path)
-        self.realtime_editing = False   # toggle with f8
+        self.realtime_editing = False  # toggle with f8
         # self.text_editor = InGameTextEditor(path=self.path, enabled=False)
-
 
     def input(self, key):
         if key == 'f5':
@@ -71,13 +70,12 @@ class HotReloader(Entity):
         if key == 'f8':
             self.realtime_editing = not self.realtime_editing
 
-
-                # overwrite specific line
-                # with open(info.filename, 'r') as f:
-                #     lines = f.readlines()
-                # lines[info.lineno] = 'OVERWRITTEN!'
-                # with open(info.filename, 'w') as f:
-                #     f.writelines(lines)
+            # overwrite specific line
+            # with open(info.filename, 'r') as f:
+            #     lines = f.readlines()
+            # lines[info.lineno] = 'OVERWRITTEN!'
+            # with open(info.filename, 'w') as f:
+            #     f.writelines(lines)
 
         # if key == '|':
         #     if not self.text_editor.enabled:
@@ -89,19 +87,17 @@ class HotReloader(Entity):
         if self.realtime_editing:
             self.hot_reload()
 
-
-
     def hot_reload(self):
         for e in [e for e in scene.entities if not e.eternal]:
             try:
                 with open(e.line_definition.filename, 'r') as f:
                     # print(f.readlines())
-                    code = f.readlines()[e.line_definition.lineno-1]
+                    code = f.readlines()[e.line_definition.lineno - 1]
 
-                # code = e.line_definition.code_context[0]
-                # print(e,
-                #     Path(info.filename).name,
-                #     info.lineno, info.code_context)
+                    # code = e.line_definition.code_context[0]
+                    # print(e,
+                    #     Path(info.filename).name,
+                    #     info.lineno, info.code_context)
                     print('---', code)
                     if '(' in code and ')' in code and code.count('(') == code.count(')'):
                         code = code.split('(', 1)[1][:-2]
@@ -115,17 +111,14 @@ class HotReloader(Entity):
             except:
                 pass
 
-
     def reload(self, reset_camera=True):
         if not self.path.exists:
             print('trying to reload, but path does not exist:', self.path)
             return
 
-
         with open(self.path, 'r') as file:
             text = file.read()
             text = make_code_reload_safe(text)
-
 
         if not is_valid_python(text):
             print('invalid python code')
@@ -147,7 +140,6 @@ class HotReloader(Entity):
         #             pass
         print('reloaded in:', time.time() - t)
 
-
     def reload_texture(self):
         textured_entities = [e for e in scene.entities if e.texture]
         for e in textured_entities:
@@ -156,7 +148,6 @@ class HotReloader(Entity):
                 compress_textures(e.texture.path.stem)
             print('reloaded texture:', e.texture.path)
             e.texture._texture.reload()
-
 
     def reload_model(self):
         entities = [e for e in scene.entities if e.model and hasattr(e.model, 'path')]
@@ -278,6 +269,7 @@ class HotReloader(Entity):
 
 if __name__ == '__main__':
     from ursina import *
+
     window.set_z_order(window.Z_top)
     app = Ursina()
     # hot_reloader = HotReloader()

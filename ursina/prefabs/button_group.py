@@ -12,13 +12,12 @@ class ButtonGroup(Entity):
         self.selected = list()
         self.options = options
 
-        self.label = Text(parent=self, scale=1/.04*.9, origin=(-.5, -.35))
+        self.label = Text(parent=self, scale=1 / .04 * .9, origin=(-.5, -.35))
         self.parent = camera.ui
         self.scale = Text.size * 2
 
         for key, value in kwargs.items():
             setattr(self, key, value)
-
 
     @property
     def options(self):
@@ -29,11 +28,9 @@ class ButtonGroup(Entity):
         self._options = value
         self.layout()
 
-
     @property
     def value(self):
         return
-
 
     @property
     def title(self):
@@ -43,12 +40,11 @@ class ButtonGroup(Entity):
     def title(self, value):
         self.label.text = value
 
-
     def layout(self):
         [destroy(c) for c in self.buttons]
         self.buttons = list()
         spacing = .05
-        longest_word = max(self.options, key=len) + '__' # padding
+        longest_word = max(self.options, key=len) + '__'  # padding
         width = Text.get_width(longest_word) / Text.size / 2
 
         for e in self.options:
@@ -59,10 +55,9 @@ class ButtonGroup(Entity):
             b.pressed_scale = 1
             self.buttons.append(b)
 
-        grid_layout(self.buttons, spacing=(0.025,0,0), origin=(-.5, .5, 0))
+        grid_layout(self.buttons, spacing=(0.025, 0, 0), origin=(-.5, .5, 0))
         for b in self.buttons:
             b.x += width / 2
-
 
     def input(self, key):
         if key == 'left mouse down' and mouse.hovered_entity in self.buttons:
@@ -81,7 +76,6 @@ class ButtonGroup(Entity):
             else:
                 b.color = self.deselected_color
                 self.selected.remove(b)
-
 
 
 if __name__ == '__main__':

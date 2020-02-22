@@ -27,7 +27,7 @@ def distance(a, b):
     except:
         pass
 
-    dist = sqrt((b[0] - a[0])**2 + (b[1] - a[1])**2 + (b[2] - a[2])**2)
+    dist = sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2 + (b[2] - a[2]) ** 2)
     # print('------------DIST:', dist)
     return dist
 
@@ -42,7 +42,7 @@ def distance2d(a, b):
     except:
         pass
 
-    return sqrt((b[0] - a[0])**2 + (b[1] - a[1])**2)
+    return sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2)
 
 
 def lerp(a, b, t):
@@ -50,10 +50,11 @@ def lerp(a, b, t):
         return a + (b - a) * t
 
     elif isinstance(a, Color) and isinstance(b, Color):
-        col = [lerp(e[0], e[1], t) for e in zip(a,b)]
+        col = [lerp(e[0], e[1], t) for e in zip(a, b)]
         return Color(col[0], col[1], col[2], col[3])
 
-    elif isinstance(a, (tuple, list, Vec2, Vec3, Vec4, LVector3f)) and isinstance(b, (tuple, list, Vec2, Vec3, Vec4, LVector3f)):
+    elif isinstance(a, (tuple, list, Vec2, Vec3, Vec4, LVector3f)) and isinstance(b, (
+    tuple, list, Vec2, Vec3, Vec4, LVector3f)):
         lerped = list()
         for i in range(min(len(a), len(b))):
             lerped.append(lerp(a[i], b[i], t))
@@ -66,7 +67,7 @@ def lerp(a, b, t):
         print(f'''can't lerp types {type(a)} and {type(b)}''')
 
 
-def inverselerp(a, b, t) :
+def inverselerp(a, b, t):
     return (a - b) / (t - b)
 
 
@@ -78,7 +79,7 @@ def round_to_closest(value, step=0):
     if not step:
         return value
 
-    step = 1/step
+    step = 1 / step
     return round(value * step) / step
 
 
@@ -110,7 +111,7 @@ def chunk_list(l, chunk_size):
 
 
 def size_list():
-    #return a list of current python objects sorted by size
+    # return a list of current python objects sorted by size
     globals_list = list()
     globals_list.clear()
     for e in globals():
@@ -128,19 +129,19 @@ def average_position(l):
     return average
 
 
-
 if __name__ == '__main__':
     from ursina import *
+
     app = Ursina()
-    e1 = Entity(position = (0,0,0))
-    e2 = Entity(position = (0,1,1))
+    e1 = Entity(position=(0, 0, 0))
+    e2 = Entity(position=(0, 1, 1))
     distance(e1, e2)
 
     between_color = lerp(color.lime, color.magenta, .5)
     print(between_color)
-    print(lerp((0,0), (0,1), .5))
-    print(lerp(Vec2(0,0), Vec2(0,1), .5))
-    print(lerp([0,0], [0,1], .5))
+    print(lerp((0, 0), (0, 1), .5))
+    print(lerp(Vec2(0, 0), Vec2(0, 1), .5))
+    print(lerp([0, 0], [0, 1], .5))
 
     print(round(Vec3(.38, .1351, 353.26), 2))
 

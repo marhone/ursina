@@ -2,11 +2,10 @@ import os
 from pathlib import Path
 from panda3d.core import getModelPath
 
-
 paused = False
 time_scale = 1
 sequences = list()
-trace_entity_definition = True # enable to set entity.line_definition
+trace_entity_definition = True  # enable to set entity.line_definition
 print_entity_definition = False
 
 
@@ -16,11 +15,13 @@ def pause():
     for seq in sequences:
         seq.pause()
 
+
 def resume():
     global paused
     paused = False
     for seq in sequences:
         seq.resume()
+
 
 def quit():
     os._exit(0)

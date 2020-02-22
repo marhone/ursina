@@ -29,48 +29,48 @@ class Ursina(ShowBase):
         base.buttonThrowers[0].node().setButtonUpEvent('buttonUp')
         base.buttonThrowers[0].node().setButtonRepeatEvent('buttonHold')
         self._input_name_changes = {
-            'mouse1' : 'left mouse down',
-            'mouse1 up' : 'left mouse up',
-            'mouse2' : 'middle mouse down',
-            'mouse2 up' : 'middle mouse up',
-            'mouse3' : 'right mouse down',
-            'mouse3 up' : 'right mouse up',
-            'wheel_up' : 'scroll up',
-            'wheel_down' : 'scroll down',
-            'arrow_left' : 'left arrow',
-            'arrow_left up' : 'left arrow up',
-            'arrow_up' : 'up arrow',
-            'arrow_up up' : 'up arrow up',
-            'arrow_down' : 'down arrow',
-            'arrow_down up' : 'down arrow up',
-            'arrow_right' : 'right arrow',
-            'arrow_right up' : 'right arrow up',
-            'lcontrol' : 'left control',
-            'rcontrol' : 'right control',
-            'lshift' : 'left shift',
-            'rshift' : 'right shift',
-            'lalt' : 'left alt',
-            'ralt' : 'right alt',
-            'lcontrol up' : 'left control up',
-            'rcontrol up' : 'right control up',
-            'lshift up' : 'left shift up',
-            'rshift up' : 'right shift up',
-            'lalt up' : 'left alt up',
-            'ralt up' : 'right alt up',
-            'control-mouse1' : 'left mouse down',
-            'control-mouse2' : 'middle mouse down',
-            'control-mouse3' : 'right mouse down',
-            'shift-mouse1' : 'left mouse down',
-            'shift-mouse2' : 'middle mouse down',
-            'shift-mouse3' : 'right mouse down',
-            'alt-mouse1' : 'left mouse down',
-            'alt-mouse2' : 'middle mouse down',
-            'alt-mouse3' : 'right mouse down',
-            'page_down' : 'page down',
-            'page_down up' : 'page down up',
-            'page_up' : 'page up',
-            'page_up up' : 'page up up',
-            }
+            'mouse1': 'left mouse down',
+            'mouse1 up': 'left mouse up',
+            'mouse2': 'middle mouse down',
+            'mouse2 up': 'middle mouse up',
+            'mouse3': 'right mouse down',
+            'mouse3 up': 'right mouse up',
+            'wheel_up': 'scroll up',
+            'wheel_down': 'scroll down',
+            'arrow_left': 'left arrow',
+            'arrow_left up': 'left arrow up',
+            'arrow_up': 'up arrow',
+            'arrow_up up': 'up arrow up',
+            'arrow_down': 'down arrow',
+            'arrow_down up': 'down arrow up',
+            'arrow_right': 'right arrow',
+            'arrow_right up': 'right arrow up',
+            'lcontrol': 'left control',
+            'rcontrol': 'right control',
+            'lshift': 'left shift',
+            'rshift': 'right shift',
+            'lalt': 'left alt',
+            'ralt': 'right alt',
+            'lcontrol up': 'left control up',
+            'rcontrol up': 'right control up',
+            'lshift up': 'left shift up',
+            'rshift up': 'right shift up',
+            'lalt up': 'left alt up',
+            'ralt up': 'right alt up',
+            'control-mouse1': 'left mouse down',
+            'control-mouse2': 'middle mouse down',
+            'control-mouse3': 'right mouse down',
+            'shift-mouse1': 'left mouse down',
+            'shift-mouse2': 'middle mouse down',
+            'shift-mouse3': 'right mouse down',
+            'alt-mouse1': 'left mouse down',
+            'alt-mouse2': 'middle mouse down',
+            'alt-mouse3': 'right mouse down',
+            'page_down': 'page down',
+            'page_down up': 'page down up',
+            'page_up': 'page up',
+            'page_up up': 'page up up',
+        }
         self.accept('buttonDown', self.input)
         self.accept('buttonUp', self.input_up)
         self.accept('buttonHold', self.input_hold)
@@ -96,7 +96,6 @@ class Ursina(ShowBase):
         except:
             print('no settings.py file')
 
-
     def _update(self, task):
         # time between frames
         dt = globalClock.getDt() * application.time_scale
@@ -120,23 +119,19 @@ class Ursina(ShowBase):
             if hasattr(entity, 'update'):
                 entity.update()
 
-
             if hasattr(entity, 'scripts'):
                 for script in entity.scripts:
                     if script.enabled and hasattr(script, 'update'):
                         script.update()
 
-
         return Task.cont
 
-
     def input_up(self, key):
-        if key in  ('wheel_up', 'wheel_down'):
+        if key in ('wheel_up', 'wheel_down'):
             return
 
         key += ' up'
         self.input(key)
-
 
     def input_hold(self, key):
         key = key.replace('control-', '')
@@ -149,7 +144,6 @@ class Ursina(ShowBase):
         key += ' hold'
         self.input(key)
 
-
     def input(self, key):
         key = key.replace('control-', '')
         key = key.replace('shift-', '')
@@ -161,14 +155,19 @@ class Ursina(ShowBase):
         if key in input_handler.rebinds:
             key = input_handler.rebinds[key]
 
-        try: mouse.input(key)
-        except: pass
-        try: input_handler.input(key)
-        except: pass
+        try:
+            mouse.input(key)
+        except:
+            pass
+        try:
+            input_handler.input(key)
+        except:
+            pass
         if not application.paused:
-            try: __main__.input(key)
-            except: pass
-
+            try:
+                __main__.input(key)
+            except:
+                pass
 
         for entity in scene.entities:
             if entity.enabled == False or entity.ignore or entity.ignore_input:
@@ -183,7 +182,6 @@ class Ursina(ShowBase):
                 for script in entity.scripts:
                     if script.enabled and hasattr(script, 'input'):
                         script.input(key)
-
 
         if key == 'f11':
             window.fullscreen = not window.fullscreen
@@ -205,7 +203,6 @@ class Ursina(ShowBase):
             else:
                 application.resume()
 
-
     def run(self):
         if window.show_ursina_splash:
             from ursina.prefabs import ursina_splash
@@ -221,7 +218,7 @@ class Ursina(ShowBase):
                             exec(l)
                         except:
                             pass
-                    print('error in settings.py',)
+                    print('error in settings.py', )
 
         except:
             print('info: no settings.py file found')

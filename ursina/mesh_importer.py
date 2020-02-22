@@ -47,6 +47,7 @@ if not hasattr(application, 'blender_paths'):
     application.blender_paths = dict()
 
     import platform
+
     if platform.system() == 'Windows':
         # get blender path by getting default program for '.blend' file extention
         import shlex
@@ -71,13 +72,12 @@ if not hasattr(application, 'blender_paths'):
             pass
 
     from pprint import pprint
+
     print('blender_paths:')
     pprint(application.blender_paths)
 
 
-
 def compress_models(path=application.models_folder, outpath=application.compressed_models_folder, name='*'):
-
     if not application.compressed_models_folder.exists():
         application.compressed_models_folder.mkdir()
 
@@ -85,7 +85,8 @@ def compress_models(path=application.models_folder, outpath=application.compress
     exported = list()
     for f in glob.glob(f'{path}**/{name}.blend'):
         with open(f, 'rb') as blend_file:
-            blender_version_number = (blend_file.read(12).decode("utf-8"))[-3:]   # get version from start of .blend file e.g. 'BLENDER-v280'
+            blender_version_number = (blend_file.read(12).decode("utf-8"))[
+                                     -3:]  # get version from start of .blend file e.g. 'BLENDER-v280'
             blender_version_number = blender_version_number[0] + '.' + blender_version_number[1:3]
             print('blender_version:', blender_version_number)
             if blender_version_number in application.blender_paths:
@@ -102,13 +103,12 @@ def compress_models(path=application.models_folder, outpath=application.compress
 
 
 def obj_to_ursinamesh(
-    path=application.compressed_models_folder,
-    outpath=application.compressed_models_folder,
-    name='*',
-    save_to_file=True,
-    delete_obj=True
-    ):
-
+        path=application.compressed_models_folder,
+        outpath=application.compressed_models_folder,
+        name='*',
+        save_to_file=True,
+        delete_obj=True
+):
     for f in path.glob(f'**/{name}.obj'):
         filepath = path / (os.path.splitext(f)[0] + '.obj')
         print('read obj at:', filepath)
@@ -117,8 +117,6 @@ def obj_to_ursinamesh(
 
         with open(filepath, 'r') as file:
             lines = file.readlines()
-
-
 
         verts = list()
         tris = list()
@@ -148,23 +146,22 @@ def obj_to_ursinamesh(
                 l = l[2:]
                 l = l.split(' ')
 
-
                 tri = tuple([int(t.split('/')[0]) for t in l])
                 for t in tri:
-                    tris.append(t-1)
+                    tris.append(t - 1)
 
                 try:
                     uv = tuple([int(t.split('/')[1]) for t in l])
                     for t in uv:
-                        uv_indices.append(t-1)
-                except: # if no uvs
+                        uv_indices.append(t - 1)
+                except:  # if no uvs
                     pass
 
                 try:
                     n = tuple([int(t.split('/')[2]) for t in l])
                     for t in n:
-                        norm_indices.append(t-1)
-                except: # if no normals
+                        norm_indices.append(t - 1)
+                except:  # if no normals
                     pass
 
         meshstring += '\nvertices='
@@ -192,6 +189,7 @@ def obj_to_ursinamesh(
 
         print('saved ursinamesh to:', outfilepath)
 
+
 # faster, but does not apply modifiers
 def compress_models_fast(model_name=None, write_to_disk=False):
     print('find models')
@@ -213,11 +211,11 @@ def compress_models_fast(model_name=None, write_to_disk=False):
                 if not o.data.mvert:
                     continue
                 # print(o.id.name.decode("utf-8", "strict"))
-                object_name = o.id.name.decode( "utf-8").replace(".", "_")[2:]
+                object_name = o.id.name.decode("utf-8").replace(".", "_")[2:]
                 object_name = object_name.split('\0', 1)[0]
                 print('name:', object_name)
 
-                vertices= o.data.mvert
+                vertices = o.data.mvert
                 verts = [v.co for v in o.data.mvert]
                 verts = tuple(verts)
 
@@ -231,10 +229,10 @@ def compress_models_fast(model_name=None, write_to_disk=False):
 
                 tris = tuple([triindex.v for triindex in o.data.mloop])
                 flippedtris = list()
-                for i in range(0, len(tris)-3, 3):
-                    flippedtris.append(tris[i+2])
-                    flippedtris.append(tris[i+1])
-                    flippedtris.append(tris[i+0])
+                for i in range(0, len(tris) - 3, 3):
+                    flippedtris.append(tris[i + 2])
+                    flippedtris.append(tris[i + 1])
+                    flippedtris.append(tris[i + 0])
 
                 file_content += ', triangles=' + str(flippedtris)
 
@@ -250,13 +248,13 @@ def compress_models_fast(model_name=None, write_to_disk=False):
 
                 return file_content
 
+
 def ursina_mesh_to_obj(mesh, name='', out_path=application.models_folder, max_decimals=3):
     from ursina.string_utilities import camel_to_snake
 
     if not name:
         name = camel_to_snake(mesh.__class__.__name__)
     obj = 'o ' + name + '\n'
-
 
     for v in mesh.vertices:
         v = [round(e, max_decimals) for e in v]
@@ -272,32 +270,29 @@ def ursina_mesh_to_obj(mesh, name='', out_path=application.models_folder, max_de
     if mesh.triangles:
         tris = mesh.triangles
 
-        if isinstance(tris[0], tuple): # convert from tuples to flat
+        if isinstance(tris[0], tuple):  # convert from tuples to flat
             new_tris = list()
             for t in tris:
                 if len(t) == 3:
                     new_tris.extend([t[0], t[1], t[2]])
-                elif len(t) == 4: # turn quad into tris
+                elif len(t) == 4:  # turn quad into tris
                     new_tris.extend([t[0], t[1], t[2], t[2], t[3], t[0]])
 
             tris = new_tris
 
-
     if mesh.mode == 'ngon':
         tris = list()
-        for i in range(1, len(mesh.vertices)-1):
-            tris.extend((i, i+1, 0))
-
+        for i in range(1, len(mesh.vertices) - 1):
+            tris.extend((i, i + 1, 0))
 
     # tris must be a list of indices
     for i, t in enumerate(tris):
         if i % 3 == 0:
             obj += '\nf '
-        obj += str(t+1)
+        obj += str(t + 1)
         if mesh.uvs:
-            obj += '/'+str(t+1)
+            obj += '/' + str(t + 1)
         obj += ' '
-
 
     # print(obj)
     with open(out_path / (name + '.obj'), 'w') as f:
@@ -305,18 +300,18 @@ def ursina_mesh_to_obj(mesh, name='', out_path=application.models_folder, max_de
         print('saved obj:', out_path / (name + '.obj'))
 
 
-
 def compress_internal():
     compress_models(application.internal_models_folder)
     obj_to_ursinamesh(
         application.internal_models_folder / 'compressed',
         application.internal_models_folder / 'compressed',
-        )
+    )
 
 
 if __name__ == '__main__':
     # compress_internal()
     from ursina import *
+
     app = Ursina()
     # e = Entity(model=Cylinder(16))
     # ursina_mesh_to_obj(e.model, name='quad_export_test')

@@ -50,7 +50,6 @@ if len(sys.argv) > 1:
 else:
     project_folder = Path.cwd()
 
-
 build_folder = Path(project_folder / 'build')
 if build_folder.exists():
     msg = f'Build folder {build_folder} already exists. \nProceed to delete and overwrite?'
@@ -82,11 +81,9 @@ print('copying python')
 python_folder = Path(sys.executable).parent
 [copy(str(f), str(python_dest / f.name)) for f in python_folder.iterdir() if f.is_file()]
 
-
 # def copy_python_lib():
 print('copying python Lib files')
 [copy(str(f), str(python_lib_dest / f.name)) for f in Path(python_folder / 'Lib').iterdir() if f.is_file()]
-
 
 # def copy_always_included():
 print('copying always included')
@@ -94,7 +91,7 @@ always_include = (
     'Lib/collections', 'Lib/ctypes', 'Lib/encodings',
     'Lib/importlib', 'Lib/urllib', 'Lib/logging',
     'Lib/site-packages/panda3d/',
-    )
+)
 
 for path in always_include:
     source = python_folder / path
@@ -111,12 +108,12 @@ for path in always_include:
 # def copy_ursina():
 print('copying ursina')
 import importlib
+
 spec = importlib.util.find_spec('ursina')
 ursina_path = Path(spec.origin).parent
 dest = build_folder / 'python/Lib/site-packages/ursina'
 dest.mkdir(parents=True, exist_ok=True)
 copytree(ursina_path, dest)
-
 
 print('copying found modules')
 finder = ModuleFinder()
@@ -142,7 +139,6 @@ for name, mod in finder.modules.items():
         dir.parent.mkdir(parents=True, exist_ok=True)
         copy(filename, dir)
 
-
 print('copying assets')
 for f in project_folder.iterdir():
     name = f.name
@@ -158,10 +154,8 @@ for f in project_folder.iterdir():
         print('copying asset:', f, 'to', src_dest / f.name)
         copy(str(f), str(dest))
 
-
 print('creating .bat file')
 with Path(build_folder / 'run.bat').open('w') as f:
     f.write('''start "" "%CD%\python\python.exe" %CD%\src\main.py''')
-
 
 print('build complete! time elapsed:', time.time() - start_time)

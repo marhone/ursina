@@ -11,7 +11,7 @@ class PlatformerController2d(Entity):
         self.color = color.orange
         self.collider = 'box'
 
-        self.animator = Animator({'idle' : None, 'walk' : None, 'jump' : None})
+        self.animator = Animator({'idle': None, 'walk': None, 'jump': None})
         # self.animation_state_machine.state = 'jump'
         # self.idle_animation = None
         # self.walk_animation = None
@@ -33,20 +33,19 @@ class PlatformerController2d(Entity):
         self.air_time = 0
 
         self.y = 2
-        ray = boxcast(self.world_position, self.down, distance=10, ignore=(self, ), thickness=1)
+        ray = boxcast(self.world_position, self.down, distance=10, ignore=(self,), thickness=1)
         if ray.hit:
             self.y = ray.world_point[1] + .01
 
-        camera.add_script(SmoothFollow(target=self, offset=[0,1,-30], speed=4))
+        camera.add_script(SmoothFollow(target=self, offset=[0, 1, -30], speed=4))
 
         for key, value in kwargs.items():
             setattr(self, key, value)
 
         self._original_scale_x = self.scale_x
 
-
     def update(self):
-        if raycast(self.position+Vec3(0,.05,0), self.right, .5, ignore=(self, ), debug=True).hit == False:
+        if raycast(self.position + Vec3(0, .05, 0), self.right, .5, ignore=(self,), debug=True).hit == False:
             self.x += self.velocity * time.dt * self.walk_speed
 
         self.walking = held_keys['a'] + held_keys['d'] > 0 and self.grounded
@@ -60,7 +59,7 @@ class PlatformerController2d(Entity):
             else:
                 self.animator.state = 'idle'
 
-        ray = boxcast(self.world_position+(0,.05,0), self.down, ignore=(self, ), thickness=.9)
+        ray = boxcast(self.world_position + (0, .05, 0), self.down, ignore=(self,), thickness=.9)
 
         if ray.distance <= .1:
             if not self.grounded:
@@ -73,10 +72,8 @@ class PlatformerController2d(Entity):
 
         # if not on ground and not on way up in jump, fall
         if not self.grounded and not self.jumping:
-            self.y -= min(self.air_time, ray.distance-.05)
-            self.air_time += time.dt*7
-
-
+            self.y -= min(self.air_time, ray.distance - .05)
+            self.air_time += time.dt * 7
 
     def input(self, key):
         if key == 'space':
@@ -96,7 +93,6 @@ class PlatformerController2d(Entity):
         if held_keys['d'] or held_keys['a']:
             self.scale_x = self._original_scale_x * self.velocity
 
-
     def jump(self):
         if not self.grounded:
             return
@@ -114,14 +110,13 @@ class PlatformerController2d(Entity):
 
         max_height = self.y + self.jump_height
         duration = self.jump_duration
-        hit_above = boxcast(self.position+(0,.99,0), self.up, ignore=(self,), thickness=.9)
+        hit_above = boxcast(self.position + (0, .99, 0), self.up, ignore=(self,), thickness=.9)
         if hit_above.hit:
-            max_height = min(hit_above.distance-.5, max_height)
-            duration *=  max_height / (self.y+self.jump_height)
+            max_height = min(hit_above.distance - .5, max_height)
+            duration *= max_height / (self.y + self.jump_height)
 
         self.animate_y(max_height, duration, resolution=30, curve=curve.out_expo)
         invoke(self.start_fall, delay=duration)
-
 
     def start_fall(self):
         self.y_animator.pause()
@@ -138,14 +133,15 @@ if __name__ == '__main__':
     window.vsync = False
     app = Ursina()
     ground = Entity(model='cube', color=color.white33, origin_y=.5, scale=(20, 10, 1), collider='box')
-    wall = Entity(model='cube', color=color.azure, origin=(-.5,.5), scale=(5,10), x=10, y=.5, collider='box')
+    wall = Entity(model='cube', color=color.azure, origin=(-.5, .5), scale=(5, 10), x=10, y=.5, collider='box')
     ceiling = Entity(model='cube', color=color.white33, origin_y=.5, scale=(10, 1, 1), y=5, collider='box')
+
 
     def input(key):
         if key == 'c':
             wall.collision = not wall.collision
             print(wall.collision)
-            
+
 
     player_controller = PlatformerController2d()
     # EditorCamera()

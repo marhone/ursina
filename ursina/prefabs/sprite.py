@@ -1,7 +1,7 @@
 from ursina import *
 
-class Sprite(Entity):
 
+class Sprite(Entity):
     ppu = 100
 
     def __init__(self, texture=None, **kwargs):

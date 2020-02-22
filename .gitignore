@@ -13,3 +13,5 @@ samples/wip
 **/*~
 **/*.swp
 **/.vscode
+/venv/
+.idea

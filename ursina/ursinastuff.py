@@ -33,7 +33,6 @@ from ursina.input_handler import held_keys
 from ursina import input_handler
 
 
-
 def invoke(function, *args, **kwargs):
     delay = 0
     if 'delay' in kwargs:
@@ -61,6 +60,7 @@ def destroy(entity, delay=0):
     s.append(Func(_destroy, entity))
     s.start()
 
+
 def _destroy(entity):
     if not entity:
         print('entity is None')
@@ -86,7 +86,7 @@ def _destroy(entity):
 
     entity.removeNode()
 
-    #unload texture
+    # unload texture
     # if hasattr(entity, 'texture') and entity.texture != None:
     #     entity.texture.releaseAll()
 
@@ -126,23 +126,28 @@ def import_all_classes(path=application.asset_folder, debug=False):
 
 
 from ursina.text import Text
+
+
 def print_on_screen(text):
     text_entity = Text(
         # parent = camera.ui,
-        text = str(text),
-        position = window.top_left,
-        origin = (-.5, .5),
+        text=str(text),
+        position=window.top_left,
+        origin=(-.5, .5),
         # scale = (.1, .1)
-        )
+    )
     destroy(text_entity, 1)
 
 
 if __name__ == '__main__':
-
     from ursina import *
+
     app = Ursina()
+
+
     def test_func(item, x=None, y=None):
         print(item, x, y)
+
 
     test_func('test')
     invoke(test_func, 'test', delay=.1)

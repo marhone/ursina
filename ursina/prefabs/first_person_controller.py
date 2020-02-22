@@ -11,25 +11,23 @@ class FirstPersonController(Entity):
         self.update_interval = 30
 
         self.cursor = Entity(
-            parent = camera.ui,
-            model = 'quad',
-            color = color.pink,
-            scale = .008,
-            rotation_z = 45
-            )
+            parent=camera.ui,
+            model='quad',
+            color=color.pink,
+            scale=.008,
+            rotation_z=45
+        )
 
         self.position = (0, 1, 1)
         camera.position = self.position
-        camera.rotation = (0,0,0)
+        camera.rotation = (0, 0, 0)
         camera.fov = 90
         mouse.locked = True
         self.target_smoothing = 100
         self.smoothing = self.target_smoothing
 
-
         for key, value in kwargs.items():
-            setattr(self, key ,value)
-
+            setattr(self, key, value)
 
     def update(self):
         self.rotation_y += mouse.velocity[0] * 40
@@ -42,31 +40,29 @@ class FirstPersonController(Entity):
         self.direction = Vec3(
             self.forward * (held_keys['w'] - held_keys['s'])
             + self.right * (held_keys['d'] - held_keys['a'])
-            ).normalized()
+        ).normalized()
 
-
-        self.smoothing = lerp(self.smoothing, self.target_smoothing, 4*time.dt)
+        self.smoothing = lerp(self.smoothing, self.target_smoothing, 4 * time.dt)
         camera.position = lerp(
             camera.position,
-            self.position + (self.up*1.5),
+            self.position + (self.up * 1.5),
             time.dt * self.smoothing)
 
         camera.rotation_y = self.rotation_y
 
-        origin = self.world_position + self.up + (self.direction/2)
-        middle_ray = raycast(origin , self.direction, ignore=[self,], distance=1.3, debug=False)
-        left_ray =   raycast(origin, lerp(self.left, self.forward, .5), ignore=[self,], distance=1.4, debug=False)
-        right_ray =   raycast(origin, lerp(self.right, self.forward, .5), ignore=[self,], distance=1.4, debug=False)
-
+        origin = self.world_position + self.up + (self.direction / 2)
+        middle_ray = raycast(origin, self.direction, ignore=[self, ], distance=1.3, debug=False)
+        left_ray = raycast(origin, lerp(self.left, self.forward, .5), ignore=[self, ], distance=1.4, debug=False)
+        right_ray = raycast(origin, lerp(self.right, self.forward, .5), ignore=[self, ], distance=1.4, debug=False)
 
         # push away from the wall
         if left_ray.hit:
             self.smoothing = 2
-            self.position -= lerp(self.left, self.forward, .5) * (1.399-left_ray.distance)
+            self.position -= lerp(self.left, self.forward, .5) * (1.399 - left_ray.distance)
 
         elif right_ray.hit:
             self.smoothing = 2
-            self.position -= lerp(self.right, self.forward, .5) * (1.399-right_ray.distance)
+            self.position -= lerp(self.right, self.forward, .5) * (1.399 - right_ray.distance)
 
         if not middle_ray.hit:
             self.position += self.direction * self.speed * time.dt
@@ -75,13 +71,13 @@ class FirstPersonController(Entity):
 if __name__ == '__main__':
     app = Ursina()
     Sky(color=color.gray)
-    Entity(model='plane', scale=100, color=color.yellow.tint(-.2), texture='white_cube', texture_scale=(100,100))
+    Entity(model='plane', scale=100, color=color.yellow.tint(-.2), texture='white_cube', texture_scale=(100, 100))
     e = Entity(
         model='cube',
         scale=(1, 5, 10),
         x=2,
         y=.01,
-        rotation_y = 45,
+        rotation_y=45,
         collider='box',
         texture='white_cube',
     )

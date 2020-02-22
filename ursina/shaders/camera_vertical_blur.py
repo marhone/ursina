@@ -1,6 +1,5 @@
 from panda3d.core import Shader
 
-
 camera_vertical_blur_shader = Shader.make('''
 
 void vshader(float4 vtx_position : POSITION,
@@ -41,10 +40,9 @@ void fshader(float2 l_texcoord0 : TEXCOORD0,
 
 ''', Shader.SL_Cg)
 
-
-
 if __name__ == '__main__':
     from ursina import *
+
     app = Ursina()
     window.color = color._16
 
@@ -53,11 +51,12 @@ if __name__ == '__main__':
     camera.shader = camera_vertical_blur_shader
     camera.set_shader_input("blur_size", .05)
 
-
     slider = ThinSlider(max=.1, dynamic=True, position=(-.25, -.45))
+
 
     def set_blur():
         camera.set_shader_input("blur_size", slider.value)
+
 
     slider.on_value_changed = set_blur
     EditorCamera()

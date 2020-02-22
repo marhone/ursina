@@ -2,7 +2,6 @@ from collections import defaultdict
 from enum import Enum
 
 
-
 class InputEvents(Enum):
     left_mouse_down = 'left mouse down'
     left_mouse_up = 'left mouse up'
@@ -51,7 +50,6 @@ class InputEvents(Enum):
         return self.value == other
 
 
-
 held_keys = defaultdict(lambda: 0)
 rebinds = dict()
 
@@ -83,12 +81,12 @@ def input(key):
         held_keys[key] = 1
 
 
-
 if __name__ == '__main__':
     from ursina import *
 
     app = Ursina()
     input_handler.bind('s', 'arrow down')  # 's'-key will now be registered as 'arrow down'-key
+
 
     # input_handler.rebind('a', 'f')
     def input(key):
@@ -96,8 +94,9 @@ if __name__ == '__main__':
         if key == 'left mouse down':
             print('pressed left mouse button')
 
-        if key == InputEvent.left_mouse_down:   # same as above, but with InputEvents enum.
+        if key == InputEvent.left_mouse_down:  # same as above, but with InputEvents enum.
             print('pressed left mouse button')
+
 
     # Is there a gamepad connected?
     # from panda3d.core import InputDevice

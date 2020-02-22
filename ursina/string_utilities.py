@@ -31,8 +31,9 @@ def multireplace(string, replacements, ignore_case=False):
     pattern = re.compile("|".join(rep_escaped), re.I if ignore_case else 0)
     return pattern.sub(lambda match: replacements[match.group(0)], string)
 
+
 def printvar(var):
-     print(traceback.extract_stack(limit=2)[0][3][9:][:-1],"=", var)
+    print(traceback.extract_stack(limit=2)[0][3][9:][:-1], "=", var)
 
 
 if __name__ == '__main__':

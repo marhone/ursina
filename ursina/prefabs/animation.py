@@ -1,15 +1,15 @@
 from ursina import *
 
-model_folders = ( # folder search order
+model_folders = (  # folder search order
     application.asset_folder,
     application.package_folder,
-    )
+)
 
-texture_folders = ( # folder search order
+texture_folders = (  # folder search order
     application.compressed_textures_folder,
     application.asset_folder,
     application.internal_textures_folder,
-    )
+)
 
 
 class Animation(Entity):
@@ -51,7 +51,7 @@ class Animation(Entity):
             self.frames.append(frame)
 
         if frame and frame.texture:
-            self.scale = (frame.texture.width/100, frame.texture.height/100)
+            self.scale = (frame.texture.width / 100, frame.texture.height / 100)
             self.aspect_ratio = self.scale_x / self.scale_y
 
         self.stop()
@@ -60,7 +60,7 @@ class Animation(Entity):
         for frame in self.frames:
             self.sequence.append(Func(self.stop))
             self.sequence.append(Func(setattr, frame, 'enabled', True))
-            self.sequence.append(Wait(1/fps))
+            self.sequence.append(Wait(1 / fps))
 
         if autoplay:
             self.play()
@@ -69,20 +69,17 @@ class Animation(Entity):
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-
     def play(self):
         if self.is_playing:
             self.stop()
         self.sequence.start()
         self.is_playing = True
 
-
     def stop(self):
         for frame in self.frames:
             frame.enabled = False
 
         self.is_playing = False
-
 
     def __setattr__(self, name, value):
         if hasattr(self, 'frames') and name in ('color', 'origin'):
@@ -93,9 +90,6 @@ class Animation(Entity):
             super().__setattr__(name, value)
         except Exception as e:
             return e
-
-
-
 
 
 if __name__ == '__main__':

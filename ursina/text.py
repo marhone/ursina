@@ -7,12 +7,12 @@ import ursina
 from ursina import *
 from ursina.entity import Entity
 
+
 # note:
 # <scale:n> tag doesn't work well in the middle of text.
 # only good for titles for now.
 
 class Text(Entity):
-
     size = .025
     default_font = 'OpenSans-Regular.ttf'
     default_resolution = 1080 * size * 2
@@ -35,12 +35,12 @@ class Text(Entity):
         self.use_tags = True
         self.start_tag = start_tag
         self.end_tag = end_tag
-        self.text_colors = {'default' : color.text_color}
+        self.text_colors = {'default': color.text_color}
 
         for color_name in color.color_names:
             self.text_colors[color_name] = color.colors[color_name]
 
-        self.tag = Text.start_tag+'default'+Text.end_tag
+        self.tag = Text.start_tag + 'default' + Text.end_tag
         self.current_color = self.text_colors['default']
         self.scale_override = 1
         self._background = None
@@ -50,7 +50,6 @@ class Text(Entity):
 
         for key, value in kwargs.items():
             setattr(self, key, value)
-
 
     @property
     def text(self):
@@ -68,11 +67,10 @@ class Text(Entity):
 
         return t
 
-
     @text.setter
     def text(self, text):
         self.raw_text = text
-        text = self.start_tag + self.end_tag + str(text) # start with empty tag for alignemnt to work?
+        text = self.start_tag + self.end_tag + str(text)  # start with empty tag for alignemnt to work?
 
         self.images.clear()
         for tn in self.text_nodes:
@@ -86,7 +84,7 @@ class Text(Entity):
 
         sections = list()
         section = ''
-        tag = self.start_tag+'default'+self.end_tag
+        tag = self.start_tag + 'default' + self.end_tag
         temp_text_node = TextNode('temp_text_node')
         temp_text_node.setFont(self.font)
         x = 0
@@ -102,16 +100,16 @@ class Text(Entity):
                 x = 0
                 i += 1
 
-            elif char == self.start_tag: # find tag
+            elif char == self.start_tag:  # find tag
                 sections.append([section, tag, x, y])
                 x += temp_text_node.calcWidth(section)
                 section = ''
 
                 tag = ''
-                for j in range(len(text)-i):
-                    tag += text[i+j]
-                    if text[i+j] == self.end_tag and len(tag) > 0:
-                        i += j+1
+                for j in range(len(text) - i):
+                    tag += text[i + j]
+                    if text[i + j] == self.end_tag and len(tag) > 0:
+                        i += j + 1
                         break
             else:
                 section += char
@@ -122,7 +120,7 @@ class Text(Entity):
         for i, s in enumerate(sections):
             tag = s[1]
             # move the text after image one space right
-            if tag.startswith(self.start_tag+'image:'):
+            if tag.startswith(self.start_tag + 'image:'):
                 for f in sections:
                     if f[3] == s[3] and f[2] > s[2]:
                         f[2] += .5
@@ -143,18 +141,17 @@ class Text(Entity):
         try:
             self.text_node.setFont(self._font)
         except:
-            pass    # default font
-
+            pass  # default font
 
         if tag != '<>':
             tag = tag[1:-1]
 
-            if tag.startswith('hsb('):   # set color based on numbers
+            if tag.startswith('hsb('):  # set color based on numbers
                 tag = tag[4:-1]
                 hsb_values = tuple(float(e.strip()) for e in tag.split(','))
                 self.current_color = color.color(*hsb_values)
 
-            elif tag.startswith('rgb('):   # set color based on numbers
+            elif tag.startswith('rgb('):  # set color based on numbers
                 tag = tag[4:-1]
                 rgb_values = (float(e.strip()) for e in tag.split(','))
                 self.current_color = color.rgba(*rgb_values)
@@ -175,7 +172,7 @@ class Text(Entity):
                     # position=(x*self.size*self.scale_override, y*self.size*self.line_height),
                     origin=(0, -.3),
                     ignore=True,
-                    )
+                )
                 if not image.texture:
                     destroy(image)
                 else:
@@ -210,7 +207,7 @@ class Text(Entity):
             self._font = font
             self._font.clear()  # remove assertion warning
             self._font.setPixelsPerUnit(self.resolution)
-            self.text = self.raw_text   # update tex
+            self.text = self.raw_text  # update tex
 
     @property
     def color(self):
@@ -223,7 +220,6 @@ class Text(Entity):
         self.text_colors['default'] = value
         for tn in self.text_nodes:
             tn.node().setTextColor(value)
-
 
     @property
     def line_height(self):
@@ -249,8 +245,7 @@ class Text(Entity):
         for line in self.text.split('\n'):
             longest_line_length = max(longest_line_length, temp_text_node.calcWidth(line))
 
-        return longest_line_length  * self.scale_x * self.size
-
+        return longest_line_length * self.scale_x * self.size
 
     @property
     def height(self):
@@ -287,9 +282,9 @@ class Text(Entity):
 
             if char == self.start_tag:
                 for j in range(len(self.raw_text) - i):
-                    if self.raw_text[i+j] == self.end_tag:
+                    if self.raw_text[i + j] == self.end_tag:
                         break
-                    newstring += self.raw_text[i+j]
+                    newstring += self.raw_text[i + j]
                 i += j + 0  # don't count tags
 
             else:
@@ -298,7 +293,7 @@ class Text(Entity):
 
                 # find length of word
                 for l in range(min(100, len(self.raw_text) - i)):
-                    if self.raw_text[i+l] == ' ':
+                    if self.raw_text[i + l] == ' ':
                         break
 
                 if linelength + l > value:  # add linebreak
@@ -312,7 +307,6 @@ class Text(Entity):
         newstring = newstring.replace(f'\n{Text.end_tag}', f'{Text.end_tag}\n')
         # print('--------------------\n', newstring)
         self.text = newstring
-
 
     @property
     def origin(self):
@@ -335,7 +329,6 @@ class Text(Entity):
         elif self._background:
             destroy(self._background)
 
-
     def align(self):
         value = self.origin
         linewidths = [self.text_nodes[0].node().calcWidth(line) for line in self.lines]
@@ -349,15 +342,14 @@ class Text(Entity):
             # x -= half line width * text node scale
             tn.setX(
                 tn.getX() - (linewidths[linenumber] / 2 * value[0] * 2 * self.size) * tn.getScale()[0] / self.size
-                )
+            )
             # center text vertically
             halfheight = len(linewidths) * self.line_height / 2
             tn.setZ(tn.getZ() + (halfheight * self.size))
             # add offset
             tn.setZ(tn.getZ() - (halfheight * value[1] * 2 * self.size))
 
-
-    def create_background(self, padding=size*2, radius=size, color=ursina.color.black66):
+    def create_background(self, padding=size * 2, radius=size, color=ursina.color.black66):
         from ursina import Quad, destroy
 
         if self._background:
@@ -372,9 +364,8 @@ class Text(Entity):
         self._background.x -= self.origin_x * self.width
         self._background.y -= self.origin_y * self.height
 
-        self._background.model = Quad(radius=radius, scale=(w/self.scale_x, h/self.scale_y))
+        self._background.model = Quad(radius=radius, scale=(w / self.scale_x, h / self.scale_y))
         self._background.color = color
-
 
     def appear(self, speed=.025, delay=0):
         from ursina.ursinastuff import invoke
@@ -396,7 +387,6 @@ class Text(Entity):
         seq.start()
         return seq
 
-
     def get_width(string, font=None):
         t = Text(string)
         if font:
@@ -405,7 +395,6 @@ class Text(Entity):
         from ursina import destroy
         destroy(t)
         return w
-
 
 
 if __name__ == '__main__':
@@ -423,11 +412,13 @@ if __name__ == '__main__':
     # color.text_color = color.lime
     Text.default_resolution = 1080 * Text.size
     test = Text(text=descr)
+
+
     # test = Text(descr)
 
     # test.text = ''
     # print(test.images)
-  # print('\n', test.text, '\n\n')
+    # print('\n', test.text, '\n\n')
     # test.font = 'VeraMono.ttf'
     # Text.font = 'VeraMono.ttf'
     # test.origin = (.5, .5)
@@ -436,6 +427,7 @@ if __name__ == '__main__':
     def input(key):
         if key == 'a':
             test.appear(speed=.025)
+
 
     test.create_background()
 

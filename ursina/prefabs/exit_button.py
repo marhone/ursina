@@ -1,19 +1,19 @@
 from ursina import *
 
+
 class ExitButton(Button):
     def __init__(self, **kwargs):
         super().__init__(
-            name = 'exit_button',
-            eternal = True,
-            origin = (.5, .5),
+            name='exit_button',
+            eternal=True,
+            origin=(.5, .5),
             # text_origin = (-.5,-.5),
-            position = window.top_right,
-            z = -999,
-            scale = (.05, .025),
-            color = color.red.tint(-.2),
-            text = 'x',
+            position=window.top_right,
+            z=-999,
+            scale=(.05, .025),
+            color=color.red.tint(-.2),
+            text='x',
             **kwargs)
-
 
     def on_click(self):
         application.quit()
@@ -24,7 +24,6 @@ class ExitButton(Button):
 
 
 if __name__ == '__main__':
-
     '''
     This is the button in the upper right corner.
     You can click on it or press Shift+Q to close the program.
